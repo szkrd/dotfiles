@@ -1,4 +1,5 @@
 .idea
+.DS_Store
 *.old
 _package-lock.json
 _node_modules
