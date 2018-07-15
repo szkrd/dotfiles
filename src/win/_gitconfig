@@ -1,0 +1,15 @@
+[credential]
+  helper = manager
+[core]
+  excludesfile = C:\\Users\\x-kurdisz\\.gitignore
+  editor = notepad
+  autocrlf = input
+[url "https://"]
+  insteadOf = git://
+[diff]
+  tool = winmerge
+[difftool "winmerge"]
+  cmd = "'C:/Program Files (x86)/WinMerge/WinMergeU.exe'" -e "$LOCAL" "$REMOTE"
+  prompt = false
+[difftool]
+  prompt = false
