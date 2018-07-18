@@ -11,6 +11,11 @@
     "diff:gc": "node ./scripts/diff gitconfig",
     "diff:gi": "node ./scripts/diff gitignore"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/szkrd/dotfiles.git"
@@ -31,6 +36,8 @@
   "dependencies": {
     "chalk": "2.4.1",
     "command-exists": "1.2.7",
+    "husky": "1.0.0-rc.13",
+    "ins": "0.0.0",
     "shelljs": "0.8.2",
     "user-home": "2.0.0"
   }
