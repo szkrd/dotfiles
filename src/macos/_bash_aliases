@@ -26,6 +26,7 @@ alias vscode='code'
 alias composer='php ~/bin/composer/composer.phar'
 alias nano='nano -x -w -z -H'
 alias na='nano'
+alias geany='open -a geany'
 
 alias feins='./install.sh frontend'
 alias felog='docker logs viddo_frontend_1 -f'

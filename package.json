@@ -1,0 +1,37 @@
+{
+  "name": "dotfiles",
+  "version": "0.0.1",
+  "description": "dotfiles",
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard ./scripts",
+    "diff": "node ./scripts/diff",
+    "diff:bp": "node ./scripts/diff bash_profile",
+    "diff:ba": "node ./scripts/diff bash_aliases",
+    "diff:gc": "node ./scripts/diff gitconfig",
+    "diff:gi": "node ./scripts/diff gitignore"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/szkrd/dotfiles.git"
+  },
+  "keywords": [
+    "dotfile",
+    "config"
+  ],
+  "author": "Szabolcs Kurdi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/szkrd/dotfiles/issues"
+  },
+  "homepage": "https://github.com/szkrd/dotfiles#readme",
+  "devDependencies": {
+    "standard": "11.0.1"
+  },
+  "dependencies": {
+    "chalk": "2.4.1",
+    "command-exists": "1.2.7",
+    "shelljs": "0.8.2",
+    "user-home": "2.0.0"
+  }
+}

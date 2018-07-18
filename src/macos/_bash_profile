@@ -51,6 +51,7 @@ PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]$(parse_git_branch
 
 PATH=$PATH:~/bin
 EDITOR=nano
+GUI_EDITOR=geany
 export LANG=en_EN.UTF-8
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
