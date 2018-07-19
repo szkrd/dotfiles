@@ -1,6 +1,8 @@
 dotfiles
 ========
 
+Clone and `npm i` as usual.
+
 ## Prerequisites
 
 ### MacOS
@@ -11,18 +13,6 @@ dotfiles
 4. `brew install node`
 5. `brew cask install meld`
 6. setup node [global installs](prefix=${HOME}/.npm-packages)
-
-### Linux
-
-TODO
-
-### Win
-
-TODO
-
-----
-
-Then do `npm i` as usual.
 
 ## Npm scripts
 
@@ -38,6 +28,7 @@ Filenames may be shortened so far (`bash_profile` as `ba`, `gitignore` as `gi` e
 
 ## TODO
 
-1. show info about changed files.
-2. add batch merge.
-3. pull or push depending on file modification date.
+1. show info about changed files
+2. add batch merge
+3. copy all to repo
+4. arch linux supprt
