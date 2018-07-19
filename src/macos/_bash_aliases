@@ -1,5 +1,7 @@
 alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
+alias grep="grep --color=always"
 alias ll='ls -la'
 alias la='ls -A'
 alias l='ls -CF'
@@ -11,6 +13,7 @@ alias rebash="source ~/.bash_profile"
 alias realias="unalias -a && . ~/.bash_profile"
 alias g="git"
 alias xx="exit"
+alias gs='git status'
 #alias ccl="git fetch --tags && conventional-changelog -i CHANGELOG.md -o CHANGELOG.md"
 alias nuke="rm -rf ./node_modules && npm cache clear --force && npm install --no-shrinkwrap --update-binary"
 alias npmr='npm run'
@@ -25,21 +28,23 @@ alias vscode='code'
 #alias pbpaste='xclip -selection clipboard -o'
 alias composer='php ~/bin/composer/composer.phar'
 alias nano='nano -x -w -z -H'
-alias na='nano'
-alias geany='open -a geany'
+alias na='nano -x'
 
 alias feins='./install.sh frontend'
 alias felog='docker logs viddo_frontend_1 -f'
-alias feenter='docker exec -it viddo_frontend_1 bash'
-alias fedown='./down.sh frontend'
-alias feup='./up.sh frontend'
-alias fecycle='fedown && feup'
+alias feenter="docker exec -it viddo_frontend_1 bash"
+alias fedown="./down.sh frontend"
+alias feup="./up.sh frontend"
+alias fecycle="fedown && feup"
+function fenpm () { docker exec -it viddo_frontend_1 sh -c "npm $*"; }
+function fenode () { docker exec -it viddo_frontend_1 sh -c "node $*"; }
 
 alias edbp='na ~/.bash_profile'
 alias edba='na ~/.bash_aliases'
 alias edgc='na ~/.gitconfig'
 alias edgi='na ~/.gitignore'
 
+function jpg2mp4 () { ffmpeg -loop 1 -i "$1" -c:v libx264 -t 15 -pix_fmt yuv420p -vf scale=320:240 "$1.mp4"; }
 function mdcd () { mkdir -p "$@" && cd "$@"; }
 function is_git_clean() {
   git_status="$(git status 2> /dev/null)"
