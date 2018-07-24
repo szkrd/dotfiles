@@ -23,12 +23,5 @@ By default the script uses `meld`.
 
 Filenames may be shortened so far (`bash_profile` as `ba`, `gitignore` as `gi` etc).
 
-- `npm run diff -- bash_profile`
-- `npm run diff:bp`, `npm run diff:ba`, `npm run diff:gi` etc.
-
-## TODO
-
-1. show info about changed files
-2. add batch merge
-3. copy all to repo
-4. arch linux supprt
+> * `npm run diff -- bash_profile`
+> * `npm run diff:bp`, `npm run diff:ba`, `npm run diff:gi` etc.

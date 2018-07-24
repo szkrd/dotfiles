@@ -4,6 +4,7 @@
   "description": "dotfiles",
   "main": "index.js",
   "scripts": {
+    "help": "cat README.md | grep '> *'",
     "lint": "standard ./scripts",
     "diff": "node ./scripts/diff",
     "diff:bp": "node ./scripts/diff bash_profile",
