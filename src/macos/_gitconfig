@@ -58,6 +58,9 @@
 	prunemas = !git branch --merged master | grep -E -v ' (development|master)$' | xargs git branch -d
 	where = !git remote show origin | grep URL | sed -e 's/^ *//'
 	cdiff = !git diff --color | diff-so-fancy | less -r
+	whoami = !sh -c 'printf "name:%2s" && git config --local --list | grep "user\\.name=" | head -n 1 | cut -c 11- && printf "email:%1s" && git config user.email' -
+	workproject = !git config --replace-all user.name \"Szabolcs Kurdi\" && git config --local user.email szabolcs.kurdi@viddo.net
+	homeproject = !git config --replace-all user.name \"Szabolcs Kurdi\" && git config --local user.email szabolcs.kurdi@gmail.com
 [color]
 	diff = always
 	status = always
