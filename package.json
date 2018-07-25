@@ -9,6 +9,7 @@
     "diff": "node ./scripts/diff",
     "diff:bp": "node ./scripts/diff bash_profile",
     "diff:ba": "node ./scripts/diff bash_aliases",
+    "diff:bs": "node ./scripts/diff bash_secret",
     "diff:gc": "node ./scripts/diff gitconfig",
     "diff:gi": "node ./scripts/diff gitignore"
   },

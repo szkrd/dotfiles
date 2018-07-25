@@ -33,6 +33,7 @@ let fn = args[0].replace(/^[_.]/, '')
 fn = {
   bp: 'bash_profile',
   ba: 'bash_aliases',
+  bs: 'bash_secret',
   gc: 'gitconfig',
   gi: 'gitignore'
 }[fn] || fn

@@ -50,7 +50,6 @@ export CLICOLOR=1
 export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 
 # some prompts
-#PS1='[\u@\h \W]\$ '
 #PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] \[\e[0;37m\]'
 PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]$(parse_git_branch)$(is_git_clean) \[\e[1;32m\]\$\[\e[m\] \[\e[0;37m\]'
 
