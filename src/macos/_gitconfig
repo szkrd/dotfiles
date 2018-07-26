@@ -46,6 +46,7 @@
 	md = merge development
 	uncommit = reset --soft HEAD^
 	slap = !git clean -fd && git reset --hard && git checkout . && git status
+	flush = stash clear
 	p = pull
 	pr = !git fetch && git pull --rebase
 	sp = !git stash && git fetch && git pull && git stash pop
