@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "help": "cat README.md | grep '> *'",
-    "lint": "standard ./scripts",
+    "lint": "standard scripts/**/*.js",
     "diff": "node ./scripts/diff",
     "diff:bp": "node ./scripts/diff bash_profile",
     "diff:ba": "node ./scripts/diff bash_aliases",
