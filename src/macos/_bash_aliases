@@ -7,8 +7,8 @@ alias cls="clear"
 alias md="mkdir"
 alias cd..="cd .."
 alias cd....="cd ../.."
-alias rebash="source ~/.bash_profile"
-alias realias="unalias -a && . ~/.bash_profile"
+alias rebash="[[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile"
+alias realias="unalias -a && rebash"
 alias xx="exit"
 
 # much short, very magic
@@ -46,6 +46,7 @@ function fenode () { docker exec -it viddo_frontend_1 sh -c "node $*"; }
 
 # edit popular files
 alias edbp='na ~/.bash_profile'
+alias edbrc='na ~/.bashrc'
 alias edba='na ~/.bash_aliases'
 alias edgc='na ~/.gitconfig'
 alias edgi='na ~/.gitignore'
