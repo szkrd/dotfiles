@@ -1,0 +1,91 @@
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+alias cls="clear"
+alias md="mkdir"
+alias cd..="cd .."
+alias cd....="cd ../.."
+alias rebash="[[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile"
+alias realias="unalias -a && rebash"
+alias xx="exit"
+
+# much short, very magic
+alias g="git"
+alias d="docker"
+if [ "$PLATFORM" = "mingw" ]; then alias d="winpty docker"; fi
+
+# npm
+alias nuke="rm -rf ./node_modules && npm cache clear --force && npm install --no-shrinkwrap --update-binary"
+alias npmr='npm run'
+alias npmrd='npm run dev'
+alias npmt='npm test'
+alias npmrt='npm test'
+alias npmtw='npm run test:watch'
+alias npmrtw='npm run test:watch'
+alias npmrl='npm run lint'
+
+#alias pbcopy='xclip -selection clipboard'
+#alias pbpaste='xclip -selection clipboard -o'
+
+# editors
+alias nano='nano -x -w -z -H'
+alias na='nano'
+alias geany='open -a geany'
+alias vscode='code'
+
+# frontend helpers
+alias feins='./install.sh frontend'
+alias felog='docker logs viddo_frontend_1 -f'
+alias feenter="docker exec -it viddo_frontend_1 bash"
+alias fedown="./down.sh frontend"
+alias feup="./up.sh frontend"
+alias fecycle="fedown && feup"
+alias feserve="APP_WEBPACK_PORT=4000 NODE_ENV=development npx webpack-dev-server --host 0.0.0.0"
+#function fenpm () { docker exec -it viddo_frontend_1 sh -c "npm $*"; }
+#function fenode () { docker exec -it viddo_frontend_1 sh -c "node $*"; }
+
+# edit popular files
+alias edbp='na ~/.bash_profile'
+alias edbrc='na ~/.bashrc'
+alias edba='na ~/.bash_aliases'
+alias edgc='na ~/.gitconfig'
+alias edgi='na ~/.gitignore'
+
+# viddo docker
+function vd-credits () {
+  USER=${1:-uploader}
+  d exec -it viddo_mysql_1 mysql --password=$VIDDO_SQL_PASSWORD -e "UPDATE user SET balance_inner=9999 WHERE username='$USER'" viddo
+  echo Added credits to $USER
+}
+
+# git
+function is_git_clean() {
+  git_status="$(git status 2> /dev/null)"
+  if [[ -n "$git_status" && ! ${git_status}} =~ "working directory clean" && ! ${git_status}} =~ "working tree clean" ]]; then
+    printf "%b" "\e[1;31m!\e[0m"
+  fi
+}
+function parse_git_branch() { git branch --color=never 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' | sed -e 's/feature/F/'; }
+
+# misc
+function mdcd () { mkdir -p "$@" && cd "$@"; }
+function title() { echo -ne "\033]0;${1}\007"; }
+function jpg2mp4 () { ffmpeg -loop 1 -i "$1" -c:v libx264 -t 15 -pix_fmt yuv420p -vf scale=320:240 "$1.mp4"; }
+
+# my file and mpd server, an ancient netbook
+function vacak_mpd() {
+  NCMPCPP=1 expect -c '
+    spawn ssh -o SendEnv=NCMPCPP szabi@$::env(VACAK_IP) -p1922
+    expect "assword:"; send "$::env(VACAK_PASSWORD)\r"
+    interact
+  '
+}
+function vacak_shell() {
+  expect -c '
+    spawn ssh szabi@$::env(VACAK_IP) -p1922
+    expect "assword:"; send "$::env(VACAK_PASSWORD)\r"
+    interact
+  '
+}
