@@ -80,9 +80,11 @@ function title() { echo -ne "\033]0;${1}\007"; }
 function jpg2mp4 () { ffmpeg -loop 1 -i "$1" -c:v libx264 -t 15 -pix_fmt yuv420p -vf scale=320:240 "$1.mp4"; }
 
 # my file and mpd server, an ancient netbook
+# for mingw use git sdk shell and `pacman -S expect`
 function vacak_mpd() {
   NCMPCPP=1 expect -c '
     spawn ssh -o SendEnv=NCMPCPP szabi@$::env(VACAK_IP) -p1922
+    log_user 0
     expect "assword:"; send "$::env(VACAK_PASSWORD)\r"
     interact
   '
@@ -90,6 +92,7 @@ function vacak_mpd() {
 function vacak_shell() {
   expect -c '
     spawn ssh szabi@$::env(VACAK_IP) -p1922
+    log_user 0
     expect "assword:"; send "$::env(VACAK_PASSWORD)\r"
     interact
   '
