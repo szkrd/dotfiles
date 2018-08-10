@@ -1,12 +1,16 @@
 # If not running interactively, don't do anything
 case $- in
-    *i*) ;;
-      *) return;;
+  *i*) ;;
+    *) return;;
 esac
 
 PLATFORM=linux
 if [[ `uname` = *"MINGW"* ]]; then
-    PLATFORM=mingw
+  PLATFORM=mingw
+elif [[ `uname` = *"Darwin"* ]]; then
+  PLATFORM=macos
+else
+  PLATFORM=linux
 fi
 
 # don't put duplicate lines or lines starting with space in the history.
@@ -31,12 +35,12 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 
 # alias definitions.
 if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+  . ~/.bash_aliases
 fi
 
 # secret env vars
 if [ -f ~/.bash_secret ]; then
-    . ~/.bash_secret
+  . ~/.bash_secret
 fi
 
 # enable programmable completion features (you don't need to enable
@@ -60,7 +64,8 @@ export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 #PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] \[\e[0;37m\]'
 #PS1="\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]$(parse_git_branch)$(is_git_clean)\[\e[1;32m\]\n\$:\\>\[\e[m\]\[\e[0;37m\]"
 
-PATH=$PATH:~/bin:/c/git-sdk-64/usr/bin/
+PATH=$PATH:~/bin
+if [ "$PLATFORM" = "mingw" ]; then PATH=$PATH:/c/git-sdk-64/usr/bin/; fi
 EDITOR=nano
 GUI_EDITOR=geany
 export LANG=en_EN.UTF-8
