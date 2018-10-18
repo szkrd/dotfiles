@@ -14,10 +14,11 @@ alias xx="exit"
 
 # much short, very magic
 alias g="git"
+alias y="yarn"
 alias d="docker"
 if [ "$PLATFORM" = "mingw" ]; then alias d='winpty docker'; fi
 
-# npm
+# npm and yarn
 alias nuke="rm -rf ./node_modules && npm cache clear --force && npm install --no-shrinkwrap --update-binary"
 alias npmr='npm run'
 alias npmrd='npm run dev'
@@ -26,6 +27,9 @@ alias npmrt='npm test'
 alias npmtw='npm run test:watch'
 alias npmrtw='npm run test:watch'
 alias npmrl='npm run lint'
+alias yadd='yarn add -D'
+alias yins='yarn install'
+alias yrem='yarn remove'
 
 #alias pbcopy='xclip -selection clipboard'
 #alias pbpaste='xclip -selection clipboard -o'
@@ -60,9 +64,8 @@ alias edgi='na ~/.gitignore'
 
 # viddo docker
 function vd-credits () {
-  USER=${1:-uploader}
-  d exec -it viddo_mysql_1 mysql --password=$VIDDO_SQL_PASSWORD -e "UPDATE user SET balance_inner=9999 WHERE username='$USER'" viddo
-  echo Added credits to $USER
+  d exec -it viddo_mysql_1 mysql --password=$VIDDO_SQL_PASSWORD -e "UPDATE balance SET balance=20000" viddo
+  echo Added credits to everyone
 }
 
 # git
@@ -77,7 +80,7 @@ function parse_git_branch() { git branch --color=never 2> /dev/null | sed -e '/^
 # misc
 function mdcd () { mkdir -p "$@" && cd "$@"; }
 function title() { echo -ne "\033]0;${1}\007"; }
-function jpg2mp4 () { ffmpeg -loop 1 -i "$1" -c:v libx264 -t 15 -pix_fmt yuv420p -vf scale=320:240 "$1.mp4"; }
+function jpg2mp4 () { ffmpeg -loop 1 -i "$1" -c:v libx264 -t 15 -pix_fmt yuv420p "$1.mp4"; }
 
 # my file and mpd server, an ancient netbook
 # for mingw use git sdk shell and `pacman -S expect`

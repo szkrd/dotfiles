@@ -73,6 +73,9 @@ export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LESSCHARSET=UTF-8
 
+# docker drives me nuts
+if [ "$PLATFORM" = "mingw" ]; then export COMPOSE_CONVERT_WINDOWS_PATHS=1; fi
+
 # make it work with the g alias
 __git_complete g __git_main
 
