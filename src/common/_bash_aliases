@@ -31,6 +31,7 @@ alias yadd='yarn add -D'
 alias yins='yarn install'
 alias yrem='yarn remove'
 alias ys='yarn start'
+alias yc='yarn clean'
 
 #alias pbcopy='xclip -selection clipboard'
 #alias pbpaste='xclip -selection clipboard -o'
