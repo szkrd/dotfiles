@@ -67,7 +67,7 @@ alias edgi='na ~/.gitignore'
 
 # viddo docker
 function vd-credits () {
-  d exec -it viddo_mysql_1 mysql --password=$VIDDO_SQL_PASSWORD -e "UPDATE balance SET balance=20000" viddo
+  d exec -it viddo_mysql_1 mysql --password=$VIDDO_SQL_PASSWORD -e "UPDATE balance SET amount=80000" viddo
   echo Added credits to everyone
 }
 
