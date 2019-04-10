@@ -4,7 +4,7 @@ if [ "$PLATFORM" = "mingw" ] || [ "$PLATFORM" = "linux" ]; then alias ls='ls --c
 alias ll='ls -la'
 alias la='ls -A'
 alias l='ls -CF'
-alias cls="clear"
+alias cls='clear && echo -e "\ec"'
 alias md="mkdir"
 alias cd..="cd .."
 alias cd....="cd ../.."
