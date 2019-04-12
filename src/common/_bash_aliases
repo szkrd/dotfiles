@@ -15,7 +15,7 @@ alias xx="exit"
 # much short, very magic
 alias g="git"
 alias y="yarn"
-if [ "$PLATFORM" = "mingw" ]; then alias wy="node /c/Program\ Files\ \(x86\)/Yarn/lib/cli.js"; fi
+if [ "$PLATFORM" = "mingw" ]; then alias y="node /c/Users/szabi/scoop/apps/yarn/current/Yarn/lib/cli.js"; fi
 alias d="docker"
 if [ "$PLATFORM" = "mingw" ]; then alias d='winpty docker'; fi
 
@@ -28,12 +28,12 @@ alias npmrt='npm test'
 alias npmtw='npm run test:watch'
 alias npmrtw='npm run test:watch'
 alias npmrl='npm run lint'
-alias yadd='yarn add -D'
-alias yins='yarn install'
-alias yrem='yarn remove'
-alias ys='yarn start'
-alias yc='yarn clean'
-alias yex='yarn start:exposed'
+alias yadd='y add -D'
+alias yins='y install'
+alias yrem='y remove'
+alias ys='y start'
+alias yc='y clean'
+alias yex='y start:exposed'
 
 #alias pbcopy='xclip -selection clipboard'
 #alias pbpaste='xclip -selection clipboard -o'
