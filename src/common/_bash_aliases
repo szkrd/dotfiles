@@ -72,11 +72,20 @@ function vd-credits () {
   echo Added credits to everyone
 }
 
-# git
+# git (is_git_clean seems to work fine on mac and mingw, but not on linux though)
 function is_git_clean() {
   git_status="$(git status 2> /dev/null)"
   if [[ -n "$git_status" && ! ${git_status}} =~ "working directory clean" && ! ${git_status}} =~ "working tree clean" ]]; then
     printf "%b" "\e[1;31m!\e[0m"
+  fi
+}
+function markup_git_branch() {
+  if [[ -n $@ ]]; then
+    if [[ -z $(git status --porcelain 2> /dev/null) ]]; then
+      echo -e " \001\033[32m\002($@)\001\033[0m\002"
+    else
+      echo -e " \001\033[31m\002($@)\001\033[0m\002"
+    fi
   fi
 }
 function parse_git_branch() { git branch --color=never 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' | sed -e 's/feature/F/'; }

@@ -55,6 +55,11 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# I usually forget to copy (or download from git's repo) the git-completion.bash
+if [ -f /usr/share/bash-completion/completions/git ]; then
+  . /usr/share/bash-completion/completions/git
+fi
+
 export TERM=xterm-256color
 
 # mac colors
@@ -64,6 +69,7 @@ export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 # some prompts
 #PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] \[\e[0;37m\]'
 #PS1="\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]$(parse_git_branch)$(is_git_clean)\[\e[1;32m\]\n\$:\\>\[\e[m\]\[\e[0;37m\]"
+PS1="\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]\$(markup_git_branch \$(parse_git_branch))\[\e[1;32m\]\n\$ \[\e[m\]\[\e[0;37m\]"
 
 PATH=$PATH:~/bin
 if [ "$PLATFORM" = "mingw" ]; then PATH=$PATH:/c/git-sdk-64/usr/bin/; fi
@@ -77,8 +83,10 @@ export LESSCHARSET=UTF-8
 # docker drives me nuts
 if [ "$PLATFORM" = "mingw" ]; then export COMPOSE_CONVERT_WINDOWS_PATHS=1; fi
 
-# make it work with the g alias
-__git_complete g __git_main
+# make it work with the g alias (pretty much the same as `__git_complete g __git_main`)
+if [[ $(declare -f _git) ]]; then
+  complete -F _git g
+fi
 
 # npm is installed with scoop, so I'm not going to mess with globals' location
 
