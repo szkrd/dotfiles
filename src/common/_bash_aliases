@@ -93,6 +93,7 @@ function parse_git_branch() { git branch --color=never 2> /dev/null | sed -e '/^
 # misc
 function mdcd () { mkdir -p "$@" && cd "$@"; }
 function title() { echo -ne "\033]0;${1}\007"; }
+alias t="title"
 function titleprefix() { TITLEPREFIX="$1"; }
 alias tp="titleprefix"
 function jpg2mp4 () { ffmpeg -loop 1 -i "$1" -c:v libx264 -t 15 -pix_fmt yuv420p "$1.mp4"; }

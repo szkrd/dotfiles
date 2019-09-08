@@ -1,3 +1,7 @@
+# bash_profile is for login shells, while bashrc is for non-login shells, but this
+# script can be used for either (macs will execute bash_profile on every terminal open anyway,
+# and path items and aliases will be reset/normalized by the script)
+
 # If not running interactively, don't do anything
 case $- in
   *i*) ;;
@@ -88,7 +92,15 @@ if [[ $(declare -f _git) ]]; then
   complete -F _git g
 fi
 
-# npm is installed with scoop, so I'm not going to mess with globals' location
+# I usually install npm with scoop on windows, so I'm not going to mess with globals' location
+# on linux the following check is for sindre's non-root npm global guide
+# (https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md)
+if [ -d "${HOME}/.npm-packages" ]; then
+  NPM_PACKAGES="${HOME}/.npm-packages"
+  export PATH="$NPM_PACKAGES/bin:$PATH"
+  unset MANPATH # delete if you already modified MANPATH elsewhere in your config
+  export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
+fi
 
 # remove path dups
 PATH="$(perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, $ENV{PATH}))')"
