@@ -92,6 +92,9 @@ if [[ $(declare -f _git) ]]; then
   complete -F _git g
 fi
 
+# python 2 for node-gyp fix
+#export PYTHON=/usr/bin/python2.7
+
 # I usually install npm with scoop on windows, so I'm not going to mess with globals' location
 # on linux the following check is for sindre's non-root npm global guide
 # (https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md)
@@ -102,23 +105,23 @@ if [ -d "${HOME}/.npm-packages" ]; then
   export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
 fi
 
-# python 2 for node-gyp fix
-#export PYTHON=/usr/bin/python2.7
-
-# much faster, but still kinda safe nvm init (nvm install 10, nvm install 12, nvm use 12 etc. works)
+# for nvm: this is a much faster, but still kinda safe nvm init
+# (nvm install 10, nvm install 12, nvm use 12, nvm alias default 10, etc. works)
 # (based on https://www.growingwiththeweb.com/2018/01/slow-nvm-init.html#comment-4188210568)
-export NVM_DIR=~/.nvm
-source $NVM_DIR/nvm.sh --no-use
-NODE_VERSION=$(ls ~/.nvm/versions/node/ | grep --color=never "v$(cat $NVM_DIR/alias/default)")
-FILE=/etc/resolv.conf
-if [ -f "$NVM_DIR/versions/node/$NODE_VERSION/bin/node" ]; then
-  export PATH="$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH"
-else
-  echo "warning: nvm fallback!"
-  # default nvm (kinda slow, because of the sanity checks)
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+if [ -d "${HOME}/.nvm" ]; then
+  export NVM_DIR=~/.nvm
+  source $NVM_DIR/nvm.sh --no-use
+  NODE_VERSION=$(ls ~/.nvm/versions/node/ | grep --color=never "v$(cat $NVM_DIR/alias/default)")
+  FILE=/etc/resolv.conf
+  if [ -f "$NVM_DIR/versions/node/$NODE_VERSION/bin/node" ]; then
+    export PATH="$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH"
+  else
+    echo "warning: nvm fallback!"
+    # default nvm (kinda slow, because of the sanity checks)
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  fi
 fi
 
 # remove path dups (finally)
