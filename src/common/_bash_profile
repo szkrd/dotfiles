@@ -109,12 +109,14 @@ fi
 # (nvm install 10, nvm install 12, nvm use 12, nvm alias default 10, etc. works)
 # (based on https://www.growingwiththeweb.com/2018/01/slow-nvm-init.html#comment-4188210568)
 if [ -d "${HOME}/.nvm" ]; then
+  export NVM_SYMLINK_CURRENT=true
   export NVM_DIR=~/.nvm
   source $NVM_DIR/nvm.sh --no-use
   NODE_VERSION=$(ls ~/.nvm/versions/node/ | grep --color=never "v$(cat $NVM_DIR/alias/default)")
   FILE=/etc/resolv.conf
   if [ -f "$NVM_DIR/versions/node/$NODE_VERSION/bin/node" ]; then
     export PATH="$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH"
+    ln -sf $(which node) $NVM_DIR/current
   else
     # FIXME this may happen with `nvm alias default node`
     echo "warning: nvm fallback!"
@@ -124,6 +126,9 @@ if [ -d "${HOME}/.nvm" ]; then
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
   fi
 fi
+
+# remove path dups (finally)
+PATH="$(perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, $ENV{PATH}))')"
 
 # remove path dups (finally)
 PATH="$(perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, $ENV{PATH}))')"
