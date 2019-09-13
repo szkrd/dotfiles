@@ -116,6 +116,7 @@ if [ -d "${HOME}/.nvm" ]; then
   if [ -f "$NVM_DIR/versions/node/$NODE_VERSION/bin/node" ]; then
     export PATH="$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH"
   else
+    # FIXME this may happen with `nvm alias default node`
     echo "warning: nvm fallback!"
     # default nvm (kinda slow, because of the sanity checks)
     export NVM_DIR="$HOME/.nvm"
