@@ -37,7 +37,7 @@ alias yc='y clean'
 alias yex='y start:exposed'
 
 # change to node version specified by project
-function nvm-project () {
+function nvm-project() {
   if [ -f ".nvmrc" ]; then
     NVER=$(cat .nvmrc)
     echo -e "${GREEN}nvmrc found, using v${NVER}${NOCOLOR}"
@@ -55,9 +55,10 @@ function nvm-project () {
 }
 
 # print the current nvm node version in the prompt
-function current_nvm_node() {
-  NVER=$(readlink ~/.nvm/current | grep -o "node\/v.*" | sed "s/node\/v//")
-  if [ ! -z "${NVER}" ]; then
+function current_node() {
+  # NVER=$(readlink ~/.nvm/current | grep -o "node\/v.*" | sed "s/node\/v//")
+  if [[ $(command -v node | wc -l) -eq 1 ]]; then
+    NVER=$(node -v)
     echo -e "\033[0;36mN:${NVER}\033[0m "
   fi
 }
