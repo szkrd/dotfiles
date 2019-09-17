@@ -36,6 +36,32 @@ alias ys='y start'
 alias yc='y clean'
 alias yex='y start:exposed'
 
+# change to node version specified by project
+function nvm-project () {
+  if [ -f ".nvmrc" ]; then
+    NVER=$(cat .nvmrc)
+    echo -e "${GREEN}nvmrc found, using v${NVER}${NOCOLOR}"
+    nvm install $NVER
+  else
+    # try to use the Dockerfile (for major node version), if we can't, then just use the fall back
+    if [ -f "Dockerfile" ]; then
+      NVER=$(cat Dockerfile | grep -o "FROM node:[0-9]\+" | sed "s/FROM node://" | head -n1)
+      echo -e "${ORANGE}nvmrc NOT found, falling back to Dockerfile, using node v${NVER}${NOCOLOR}"
+      nvm install $NVER
+    else
+      echo -e "${RED}nvmrc/Dockerfile NOT found, sorry${NOCOLOR}"
+    fi
+  fi
+}
+
+# print the current nvm node version in the prompt
+function current_nvm_node() {
+  NVER=$(readlink ~/.nvm/current | grep -o "node\/v.*" | sed "s/node\/v//")
+  if [ ! -z "${NVER}" ]; then
+    echo -e "\033[0;36mN:${NVER}\033[0m "
+  fi
+}
+
 if [ "$PLATFORM" = "linux" ]; then
   alias pbcopy='xclip -selection clipboard'
   alias pbpaste='xclip -selection clipboard -o'
