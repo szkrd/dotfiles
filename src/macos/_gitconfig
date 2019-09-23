@@ -23,7 +23,7 @@
     camam = commit --amend -am
     camN = commit --no-verify -am
     branch-id = !git branch | grep '*' | grep -o 'POR-[0-9]*'
-    cambi = !sh -c 'git commit -am \""#$(git branch-id) $*"\"' -
+    cambi = !sh -c 'git commit -am \""[$(git branch-id)] $*"\"' -
     whoops = commit --amend -all
     caa = !git add --all && git commit
     go = !git add --all && git commit && git push
