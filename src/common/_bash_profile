@@ -146,5 +146,11 @@ if [ -d "${HOME}/.nvm" ]; then
   fi
 fi
 
+# allow passing NVMUSE env var to immediately switch to a version
+if [ ! -z "${NVMUSE}" ]; then
+  unset npm_config_prefix
+  nvm use ${NVMUSE}
+fi
+
 # remove path dups (finally)
 PATH="$(perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, $ENV{PATH}))')"
