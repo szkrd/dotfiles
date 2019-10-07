@@ -19,7 +19,7 @@ alias d="docker"
 if [ "$PLATFORM" = "mingw" ]; then alias d='winpty docker'; fi
 alias p='pm2'
 
-# npm and yarn
+# npm, nvm and yarn
 alias nuke="rm -rf ./node_modules && npm cache clear --force && npm install --no-shrinkwrap --update-binary"
 alias npmr='npm run'
 alias npmrd='npm run dev'
@@ -35,6 +35,7 @@ alias yrem='y remove'
 alias ys='y start'
 alias yc='y clean'
 alias yex='y start:exposed'
+alias nP='nvm-project'
 
 # change to node version specified by project
 function nvm-project() {
