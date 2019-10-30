@@ -64,6 +64,13 @@ if [ -f /usr/share/bash-completion/completions/git ]; then
   . /usr/share/bash-completion/completions/git
 fi
 
+# git autocomplete using brew on mac (brew install bash-completion)
+if [ "$PLATFORM" = "macos" ]; then
+  if [ -f `brew --prefix`/etc/bash_completion.d/git-completion.bash ]; then
+    . `brew --prefix`/etc/bash_completion.d/git-completion.bash
+  fi
+fi
+
 export TERM=xterm-256color
 
 # mac colors
