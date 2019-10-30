@@ -78,17 +78,10 @@ if [ "$PLATFORM" = "mingw" ]; then alias geany='/c/Program\ Files\ \(x86\)/Geany
 alias vscode='code'
 
 # frontend helpers
-alias feins='./install.sh frontend'
-alias beins='./install.sh backend'
-alias felog='d logs viddo_frontend_1 -f'
-alias feenter="d exec -it viddo_frontend_1 bash"
-alias fedown="./down.sh frontend"
-alias feup="./up.sh frontend"
-alias bedown="./down.sh backend"
-alias beup="./up.sh backend"
-alias fecycle="fedown && feup"
-alias feserve="APP_WEBPACK_PORT=4000 NODE_ENV=development npx webpack-dev-server"
-function fenode () { d exec -it viddo_frontend_1 sh -c "node $*"; }
+#alias felog='d logs viddo_frontend_1 -f'
+#alias feenter="d exec -it viddo_frontend_1 bash"
+#alias feserve="APP_WEBPACK_PORT=4000 NODE_ENV=development npx webpack-dev-server"
+#function fenode () { d exec -it viddo_frontend_1 sh -c "node $*"; }
 
 # edit popular files
 alias edbp='na ~/.bash_profile'
@@ -98,10 +91,10 @@ alias edgc='na ~/.gitconfig'
 alias edgi='na ~/.gitignore'
 
 # viddo docker
-function vd-credits () {
-  d exec -it viddo_mysql_1 mysql --password=$VIDDO_SQL_PASSWORD -e "UPDATE balance SET amount=80000" viddo
-  echo Added credits to everyone
-}
+#function vd-credits () {
+#  d exec -it viddo_mysql_1 mysql --password=$VIDDO_SQL_PASSWORD -e "UPDATE balance SET amount=80000" viddo
+#  echo Added credits to everyone
+#}
 
 # git (is_git_clean seems to work fine on mac and mingw, but not on linux though)
 function is_git_clean() {
