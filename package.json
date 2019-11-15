@@ -11,7 +11,9 @@
     "diff:ba": "node ./scripts/diff bash_aliases",
     "diff:bs": "node ./scripts/diff bash_secret",
     "diff:gc": "node ./scripts/diff gitconfig",
-    "diff:gi": "node ./scripts/diff gitignore"
+    "diff:gi": "node ./scripts/diff gitignore",
+    "diff:tmux": "node ./scripts/diff tmux",
+    "diff:screen": "node ./scripts/diff screen"
   },
   "husky": {
     "hooks": {

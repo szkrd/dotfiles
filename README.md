@@ -25,3 +25,11 @@ Filenames may be shortened so far (`bash_profile` as `ba`, `gitignore` as `gi` e
 
 > * `npm run diff -- bash_profile`
 > * `npm run diff:bp`, `npm run diff:ba`, `npm run diff:gi` etc.
+> * supported files and aliases:
+>   * `bp`: `.bash_profile`
+>   * `br`: `.bashrc` (alias for bash_profile)
+>   * `bs`: `.bash_secret`
+>   * `gc`: `.gitconfig`
+>   * `gi`: `.gitignore`
+>   * `tmux`: `.tmux.conf`
+>   * `screen`: `.screenrc`
