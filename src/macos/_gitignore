@@ -2,6 +2,8 @@
 .idea
 node_modules
 *.old
+.package.json
 _package-lock.json
 _node_modules
 __pycache__
+
