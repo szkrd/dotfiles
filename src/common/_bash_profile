@@ -101,7 +101,7 @@ LIGHTCYAN='\033[1;36m'
 #PS1="\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]$(parse_git_branch)$(is_git_clean)\[\e[1;32m\]\n\$:\\>\[\e[m\]\[\e[0;37m\]"
 PS1="\[\e[0;32m\]\u\[\e[m\] \$(current_node)\[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]\$(markup_git_branch \$(parse_git_branch))\[\e[1;32m\]\n\$ \[\e[m\]\[\e[0;37m\]"
 
-PATH=$PATH:~/bin
+PATH=$PATH:~/bin:~/bin/rabbitmq/sbin:~/Nextcloud/Work/bin:~/Projects/planorama/DevScripts/services
 if [ "$PLATFORM" = "mingw" ]; then PATH=$PATH:/c/git-sdk-64/usr/bin/; fi
 EDITOR=nano
 GUI_EDITOR=geany
