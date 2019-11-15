@@ -24,7 +24,6 @@ hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u
 #============================
 # startup
 
-#screen -t ToRoot         15    su
 #screen -t Bash           0     bash
 #screen -t Midnight       1     mc -c -x
 #exec mc -c -x
