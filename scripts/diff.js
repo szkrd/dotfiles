@@ -43,15 +43,19 @@ fn = {
   screen: 'screenrc'
 }[fn] || fn
 
-let leftFile = path.join(projectLocation, 'src', 'common', `_${fn}`)
+const selectLeftByPlatform = (s = 'common') => path.join(projectLocation, 'src', s, `_${fn}`)
+let leftFile = selectLeftByPlatform()
 let rightFile = path.join(userHome, `.${fn}`)
 
-// if "common" did not work, try it with the platform specific override
+// if "common" did not work, try it with the platform specific override, then with 'macos'
 if (!fs.existsSync(leftFile)) {
-  leftFile = path.join(projectLocation, 'src', platformNiceName, `_${fn}`)
+  leftFile = selectLeftByPlatform(platformNiceName)
+}
+if (!fs.existsSync(leftFile)) {
+  leftFile = selectLeftByPlatform('macos')
 }
 
-// nowadays I use bashr-only setups
+// nowadays I use bashrc-only setups
 if (fn === 'bash_profile' && isLinux) {
   rightFile = rightFile.replace(/_profile$/, 'rc')
 }
