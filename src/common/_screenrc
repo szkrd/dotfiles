@@ -1,0 +1,62 @@
+#nethack             on
+#autodetach          off
+#hardcopy_append     off
+#vbell               off
+startup_message     off
+#silencewait         15
+#defscrollback       1000
+#shell               bash
+#termcapinfo         linux "ve=\E[?25h\E[?17;0;64c"
+#sorendition rw
+#hardstatus alwayslastline "%{.w} %c | %d.%m.%Y |  %{gb} %w %{= dd}  "
+hardstatus             alwayslastline
+hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %Y/%m/%d %D %{W}%c %{g}]'
+#pow_detach_msg        "BYE"
+#activity              "Master! Trouble in %n (%t) [%w:%s]~"
+#bell_msg              "Master, Troubel in %n!"
+#vbell_msg             "   Beep  ----  Beep!!  "
+#caption always
+#caption string "%{= kW}%n %t %{kK}(%W)%=%{= kY}[%c]"
+#caption string "%{= kB}%-w %{= kY}%n %t %{= kB}%+w %=%{= kY}[%c]"
+#windowlist title "Num Name%=%{= kb}Flags"
+#windowlist string "%3n %t%=%{= kb}%f"
+
+#============================
+# startup
+
+#screen -t ToRoot         15    su
+#screen -t Bash           0     bash
+#screen -t Midnight       1     mc -c -x
+#exec mc -c -x
+
+#============================
+# encoding
+
+defutf8 on
+defencoding utf-8
+
+#============================
+# bindings (^a)
+#
+# - [ or ESC = copy mode
+# - ENTER in copy mode = start selection
+# - ] = paste
+# - w = window list
+# - c = create new window
+# - p / n = prev / next
+# - A = rename
+#
+
+bind w windowlist -b
+
+# backspace ctrl-h
+bindkey -d -k kb stuff "\010"
+
+# Arrow keys to switch terminals (only works with X) 
+# Alt + left / right
+bindkey ^[[1;3D prev 
+bindkey ^[[1;3C next 
+
+#============================
+
+termcap xterm "XT=true"
