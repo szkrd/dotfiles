@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const fs = require('fs')
 const os = require('os')
 const childProcess = require('child_process')
@@ -10,7 +11,9 @@ const commandExistsSync = require('command-exists').sync
 const getLogger = (color) => (s, ...args) => console.log(chalk[color](s), ...(args.length ? args : []))
 const log = { error: getLogger('red'), warn: getLogger('yellow'), info: getLogger('white') }
 const args = process.argv.slice(2)
-const projectLocation = path.join(path.dirname(process.argv[1]), '/..')
+let scriptLocation = process.argv[1]
+try { scriptLocation = fs.readlinkSync(process.argv[1]) } catch (err) {}
+const projectLocation = path.join(path.dirname(scriptLocation), '/..')
 const platform = os.platform()
 const isMacOS = platform === 'darwin'
 const isLinux = platform === 'linux'
