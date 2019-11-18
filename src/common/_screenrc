@@ -51,10 +51,10 @@ bind w windowlist -b
 # backspace ctrl-h
 bindkey -d -k kb stuff "\010"
 
-# Arrow keys to switch terminals (only works with X) 
+# Arrow keys to switch terminals (only works with X)
 # Alt + left / right
-bindkey ^[[1;3D prev 
-bindkey ^[[1;3C next 
+bindkey ^[[1;3D prev
+bindkey ^[[1;3C next
 
 #============================
 
