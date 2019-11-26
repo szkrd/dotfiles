@@ -64,16 +64,6 @@ function current_node() {
   fi
 }
 
-# allow nnn to change directory on quitting with ctrl+g
-function n() {
-  export NNN_TMPFILE=${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd
-  nnn "$@"
-  if [ -f $NNN_TMPFILE ]; then
-    . $NNN_TMPFILE
-    rm $NNN_TMPFILE
-  fi
-}
-
 if [ "$PLATFORM" = "linux" ]; then
   alias pbcopy='xclip -selection clipboard'
   alias pbpaste='xclip -selection clipboard -o'
