@@ -22,7 +22,7 @@
     cam = commit -am
     camam = commit --amend -am
     camN = commit --no-verify -am
-    branch-id = !git branch | grep '*' | grep -oE '[A-Za-z]{3}-[0-9]{1,4}'
+    branch-id = !git branch | grep '*' | grep -oE '[A-Za-z]{3}-[0-9]{1,4}' | head -1
     cambi = !sh -c 'git commit -am \""[$(git branch-id)] $*"\"' -
     whoops = commit --amend -all
     caa = !git add --all && git commit
