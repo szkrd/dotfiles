@@ -10,6 +10,7 @@ alias cd....="cd ../.."
 alias rebash="[[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile"
 alias realias="unalias -a && rebash"
 alias xx="exit"
+alias mc="MC=true . /usr/lib/mc/mc-wrapper.sh"
 
 # much short, very magic
 alias g="git"
@@ -60,7 +61,7 @@ function current_node() {
   # NVER=$(readlink ~/.nvm/current | grep -o "node\/v.*" | sed "s/node\/v//")
   if [[ $(command -v node | wc -l) -eq 1 ]]; then
     NVER=$(node -v)
-    echo -e "\033[0;36mN:${NVER}\033[0m "
+    echo -e " ${CYAN}N:${NVER}${NOCOLOR}"
   fi
 }
 
@@ -90,29 +91,26 @@ alias edba='na ~/.bash_aliases'
 alias edgc='na ~/.gitconfig'
 alias edgi='na ~/.gitignore'
 
-# viddo docker
-#function vd-credits () {
-#  d exec -it viddo_mysql_1 mysql --password=$VIDDO_SQL_PASSWORD -e "UPDATE balance SET amount=80000" viddo
-#  echo Added credits to everyone
-#}
-
-# git (is_git_clean seems to work fine on mac and mingw, but not on linux though)
-function is_git_clean() {
-  git_status="$(git status 2> /dev/null)"
-  if [[ -n "$git_status" && ! ${git_status}} =~ "working directory clean" && ! ${git_status}} =~ "working tree clean" ]]; then
-    printf "%b" "\e[1;31m!\e[0m"
-  fi
-}
+# git
 function markup_git_branch() {
   if [[ -n $@ ]]; then
     if [[ -z $(git status --porcelain 2> /dev/null) ]]; then
-      echo -e " \001\033[32m\002($@)\001\033[0m\002"
+      echo -e " ${GREEN}($@)${NOCOLOR}"
     else
-      echo -e " \001\033[31m\002($@)\001\033[0m\002"
+      echo -e " ${RED}($@)${NOCOLOR}"
     fi
   fi
 }
-function parse_git_branch() { git branch --color=never 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' | sed -e 's/feature/F/'; }
+function parse_git_branch() {
+  git branch --color=never 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' | sed -e 's/feature/F/'
+}
+
+# detect mc subshell in prompt (requires MC=true of course)
+function is_mc() {
+  if [ "${MC}" = "true" ]; then
+    echo -e " ${ORANGE}MC▾${NOCOLOR}"
+  fi
+}
 
 # misc
 function mdcd () { mkdir -p "$@" && cd "$@"; }

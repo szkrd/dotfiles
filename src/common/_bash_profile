@@ -37,6 +37,25 @@ shopt -s checkwinsize
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
+# terminal colors (usage: `echo -e "foo ${RED}bar${NOCOLOR}"`)
+# (no export, I'll use it in the shell only, but let's do this before reading aliases)
+NOCOLOR='\033[0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+ORANGE='\033[0;33m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+WHITE='\033[1;37m'
+LIGHTGRAY='\033[0;37m'
+DARKGRAY='\033[1;30m'
+LIGHTRED='\033[1;31m'
+LIGHTGREEN='\033[1;32m'
+LIGHTBLUE='\033[1;34m'
+LIGHTPURPLE='\033[1;35m'
+LIGHTCYAN='\033[1;36m'
+
 # alias definitions
 unalias -a
 if [ -f ~/.bash_aliases ]; then
@@ -77,29 +96,11 @@ export TERM=xterm-256color
 export CLICOLOR=1
 export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 
-# terminal colors (usage: `echo -e "foo ${RED}bar${NOCOLOR}"`)
-# (no export, I'll use it in the shell only)
-NOCOLOR='\033[0m'
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[1;33m'
-ORANGE='\033[0;33m'
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
-WHITE='\033[1;37m'
-LIGHTGRAY='\033[0;37m'
-DARKGRAY='\033[1;30m'
-LIGHTRED='\033[1;31m'
-LIGHTGREEN='\033[1;32m'
-LIGHTBLUE='\033[1;34m'
-LIGHTPURPLE='\033[1;35m'
-LIGHTCYAN='\033[1;36m'
-
 # some prompts (note the backslash before the $ sign)
 #PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] \[\e[0;37m\]'
 #PS1="\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]$(parse_git_branch)$(is_git_clean)\[\e[1;32m\]\n\$:\\>\[\e[m\]\[\e[0;37m\]"
-PS1="\[\e[0;32m\]\u\[\e[m\] \$(current_node)\[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]\$(markup_git_branch \$(parse_git_branch))\[\e[1;32m\]\n\$ \[\e[m\]\[\e[0;37m\]"
+#PS1="\[\e[0;32m\]\u\[\e[m\] \$(current_node)\[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]\$(markup_git_branch \$(parse_git_branch))\[\e[1;32m\]\n\$ \[\e[m\]\[\e[0;37m\]"
+PS1="${GREEN}\u\$(is_mc)\$(current_node) ${LIGHTBLUE}\w\$(markup_git_branch \$(parse_git_branch))${LIGHTGREEN}\n\$ ${NOCOLOR}"
 
 PATH=$PATH:~/bin:~/.local/bin:~/bin/rabbitmq/sbin:~/Nextcloud/Work/bin:~/Projects/planorama/DevScripts/services
 if [ "$PLATFORM" = "mingw" ]; then PATH=$PATH:/c/git-sdk-64/usr/bin/; fi
