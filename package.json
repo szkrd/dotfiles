@@ -13,7 +13,8 @@
     "diff:gc": "node ./scripts/diff gitconfig",
     "diff:gi": "node ./scripts/diff gitignore",
     "diff:tmux": "node ./scripts/diff tmux",
-    "diff:screen": "node ./scripts/diff screen"
+    "diff:screen": "node ./scripts/diff screen",
+    "diff:mc": "node ./scripts/diff mc"
   },
   "husky": {
     "hooks": {

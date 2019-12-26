@@ -28,7 +28,8 @@ const fnTemplates = {
   gc: 'gitconfig',
   gi: 'gitignore',
   tmux: 'tmux.conf',
-  screen: 'screenrc'
+  screen: 'screenrc',
+  mc: 'config/mc/menu'
 }
 
 const getDiffByteCount = (a, b) => {

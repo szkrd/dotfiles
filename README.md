@@ -5,16 +5,19 @@ Clone and `npm i` as usual.
 
 ## Prerequisites
 
+If you want to use the differ, then install _git_, _nano_, _node_, _meld_.
+
 ### MacOS
 
 1. [update bash](https://johndjameson.com/blog/updating-your-shell-with-homebrew/)
-2. `brew install git`
-3. `brew install nano`
-4. `brew install node`
-5. `brew cask install meld`
-6. setup node [global installs](prefix=${HOME}/.npm-packages)
+2. `brew install git nano node`
+3. `brew cask install meld`
 
 ## Npm scripts
+
+- `npm run lint` - standard linter
+- `npm run help` - prints diff section below
+- `npm run diff` - interactive differ, see below
 
 ### Diffing
 
@@ -33,3 +36,4 @@ Filenames may be shortened so far (`bash_profile` as `ba`, `gitignore` as `gi` e
 >   * `gi`: `.gitignore`
 >   * `tmux`: `.tmux.conf`
 >   * `screen`: `.screenrc`
+>   * `mc`: `.config/mc/menu` (mc user menu)
