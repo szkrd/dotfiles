@@ -81,7 +81,7 @@ shell_patterns=0
 # - %s (which is single + multi combined) would be nicer, but that's kinda complicated
 # ----------------------------------------------------------------------------
 + ! t t
-c       Copy path with filename to clipboard
+C       Copy path with filename to clipboard
         FN=%d/%f
         if [ %f = ".." ]; then
             FN=%d
@@ -89,12 +89,51 @@ c       Copy path with filename to clipboard
         echo -n $FN | sed 's/ /\\ /g' | xclip -i -sel p -f | xclip -i -sel c
 
 + t t
-c       Copy paths with filename to clipboard
+C       Copy paths with filename to clipboard
         FN=""
         for i in %t ; do
             FN="${FN}%d/${i}\n"
         done
         echo -n $FN | sed 's/ /\\ /g' | xclip -i -sel p -f | xclip -i -sel c
+
+# clipboard files
+# - cut/copy/paste using desktop environment "clipboard buffers"
+# - requires https://github.com/larspontoppidan/clipboard-files
+#   (symlink `ccopy`, `ccut` and `cpaste` at least to `clipboard-files`)
+# ----------------------------------------------------------------------------
+
+=
+c       Copy files
+        TEMP_FILE=$(mktemp)
+        for i in %s ; do
+            if [ "${i}" != ".." ]; then
+                # bash too has a nice printf, but we're not in bash now
+                # (this is a dumb posix printf, but its simple quote-escape is enough)
+                /usr/bin/printf '%q\n' "${i}" >> $TEMP_FILE
+            fi
+        done
+        # if not empty, then use xargs to turn it into a list param
+        if [ -s $TEMP_FILE ];
+            then cat $TEMP_FILE | xargs ccopy
+        fi
+        rm $TEMP_FILE
+
+=
+U       Cut files
+        TEMP_FILE=$(mktemp)
+        for i in %s ; do
+            if [ "${i}" != ".." ]; then
+                /usr/bin/printf '%q\n' "${i}" >> $TEMP_FILE
+            fi
+        done
+        if [ -s $TEMP_FILE ];
+            then cat $TEMP_FILE | xargs ccut
+        fi
+        rm $TEMP_FILE
+
+=
+p       Paste files here
+        cpaste
 
 # decompress anything
 # - uses [atool](https://www.nongnu.org/atool/)
@@ -114,6 +153,8 @@ X       Extract to other panel
         done
 
 # compress with zip
+# - zip is hardcoded for now
+# - TODO: probably this can be done in a nicer way like I did with ccopy above
 # ----------------------------------------------------------------------------
 =
 z       Zip
@@ -123,18 +164,18 @@ z       Zip
         LAST_RAW_FN=""
         L=0
         for i in %s ; do
-            # tried to use printf, sed and many other tools to
-            # get a properly escaped name, but it's a pain in the back
+            # zip will happily use the newline delimited
+            # list without any special escaping needs
             LAST_RAW_FN=${i}
             echo ${i} >> $TEMP_FILE
             L=$((L + 1))
         done
         if [ $L -eq 1 ]; then
-            # it was just a single file under the cursor
+            # it was just a single file under the cursor then
+            # we can ignore the temp file and use the "last" filename
             zip -X -q -r "${D}/${LAST_RAW_FN}.zip" "${LAST_RAW_FN}"
         else
-            # multiple files selected
-            # cat $TEMP_FILE | atool "${D}/${ARCHIVE_NAME}" <- this does NOT work
+            # multiple files selected: use the temp-file
             zip -X -q -r "${D}/${ARCHIVE_NAME}" -@ < $TEMP_FILE
         fi
         rm $TEMP_FILE
