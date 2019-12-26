@@ -4,6 +4,27 @@ shell_patterns=0
 # see: https://midnight-commander.org/ticket/3423?cversion=0&cnum_hist=8
 
 ##############################################################################
+#  Current shortcuts
+#  (collected with `^[a-zA-Z@]       [a-zA-Z].*$`)
+#
+#  - @ = Do something on the current file(s)
+#  - C = Copy path(s) with filename to clipboard
+#  - c = Copy files
+#  - U = Cut files
+#  - p = Paste files here
+#  - x = Extract here
+#  - X = Extract to other panel
+#  - z = Zip
+#  - Z = Zip with params
+#  - v = Open in vscode
+#  - e = Open in geany
+#  - g = Open in gimp
+#  - O = Optimize with png-quant (overwrite)
+#  - w = Open in current webStorm
+#  - o = Open with default app
+#  - t = Tmux split
+#
+##############################################################################
 #  Conditions syntax (`+ t t`, `= t D` etc.)
 #  =================
 #
@@ -12,8 +33,8 @@ shell_patterns=0
 #
 #  ## 1. Visibility conditions
 #
-#  - `=` default, menu item is always visible
-#  - `+` visibility with add-on conditions
+#  - `=` default, autoselect this item
+#  - `+` add-on conditions
 #
 #  ## 2. Sub-conditions
 #
@@ -102,36 +123,12 @@ C       Copy paths with filename to clipboard
 #   (symlink `ccopy`, `ccut` and `cpaste` at least to `clipboard-files`)
 # ----------------------------------------------------------------------------
 
-=
 c       Copy files
-        TEMP_FILE=$(mktemp)
-        for i in %s ; do
-            if [ "${i}" != ".." ]; then
-                # bash too has a nice printf, but we're not in bash now
-                # (this is a dumb posix printf, but its simple quote-escape is enough)
-                /usr/bin/printf '%q\n' "${i}" >> $TEMP_FILE
-            fi
-        done
-        # if not empty, then use xargs to turn it into a list param
-        if [ -s $TEMP_FILE ];
-            then cat $TEMP_FILE | xargs ccopy
-        fi
-        rm $TEMP_FILE
+        ccopy %s
 
-=
 U       Cut files
-        TEMP_FILE=$(mktemp)
-        for i in %s ; do
-            if [ "${i}" != ".." ]; then
-                /usr/bin/printf '%q\n' "${i}" >> $TEMP_FILE
-            fi
-        done
-        if [ -s $TEMP_FILE ];
-            then cat $TEMP_FILE | xargs ccut
-        fi
-        rm $TEMP_FILE
+        ccut %s
 
-=
 p       Paste files here
         cpaste
 
@@ -139,54 +136,49 @@ p       Paste files here
 # - uses [atool](https://www.nongnu.org/atool/)
 # - deps: `apt install tar gzip bzip2 lzip plzip lzop lzma zip unzip rar unrar unace arj rpm cpio arc nomarch p7zip unalz atool`
 #   (assuming file and perl has already been installed)
+# - %s is not enough, the for loop is needed
 # ----------------------------------------------------------------------------
-= t r
+=+ f \.(zip|tar|rar|gz|xz|bz2|rpm)?$
++ t r
 x       Extract here
         for i in %s ; do
             aunpack -q $i
         done
 
-= t r
+=+ f \.(zip|tar|rar|gz|xz|bz2|rpm)?$
++ t r
 X       Extract to other panel
         for i in %s ; do
             aunpack -q $i --extract-to=%D
         done
 
 # compress with zip
-# - zip is hardcoded for now
-# - TODO: probably this can be done in a nicer way like I did with ccopy above
+# - plain zip is hardcoded for now
+# - atool compress (apack) works rather differently
 # ----------------------------------------------------------------------------
-=
 z       Zip
         ARCHIVE_NAME="archive_$(date +%%F).zip"
-        TEMP_FILE=$(mktemp)
         D=%D
-        LAST_RAW_FN=""
+        LAST_FN=""
         L=0
         for i in %s ; do
-            # zip will happily use the newline delimited
-            # list without any special escaping needs
-            LAST_RAW_FN=${i}
-            echo ${i} >> $TEMP_FILE
+            LAST_FN=${i}
             L=$((L + 1))
         done
         if [ $L -eq 1 ]; then
             # it was just a single file under the cursor then
-            # we can ignore the temp file and use the "last" filename
-            zip -X -q -r "${D}/${LAST_RAW_FN}.zip" "${LAST_RAW_FN}"
+            zip -X -q -r "${D}/${LAST_FN}.zip" "${LAST_FN}"
         else
-            # multiple files selected: use the temp-file
-            zip -X -q -r "${D}/${ARCHIVE_NAME}" -@ < $TEMP_FILE
+            # multiple files selected
+            zip -X -q -r "${D}/${ARCHIVE_NAME}" %s
         fi
-        rm $TEMP_FILE
 
 # Mostly same as above, but with extra parameters
 # (the % + { prompt in mc is just way too dumb for this)
-=
 Z       Zip with params
         NOCOLOR='\e[0m'
         CYAN='\e[0;36m'
-        echo "${CYAN}Enter extra parameters!${NOCOLOR}"
+        echo "\n${CYAN}Enter extra parameters!${NOCOLOR}"
         echo "Some useful ones:"
         echo "${CYAN}-e${NOCOLOR}    = encrypt"
         echo "${CYAN}-0${NOCOLOR}    = store"
@@ -197,21 +189,69 @@ Z       Zip with params
         echo "${CYAN}-y${NOCOLOR}    = do not resolve symlinks"
         read PARAMS
         ARCHIVE_NAME="archive_$(date +%%F).zip"
-        TEMP_FILE=$(mktemp)
         D=%D
-        LAST_RAW_FN=""
+        LAST_FN=""
         L=0
         for i in %s ; do
-            LAST_RAW_FN=${i}
-            echo ${i} >> $TEMP_FILE
+            LAST_FN=${i}
             L=$((L + 1))
         done
         if [ $L -eq 1 ]; then
-            zip $PARAMS -r "${D}/${LAST_RAW_FN}.zip" "${LAST_RAW_FN}"
+            zip $PARAMS -r "${D}/${LAST_FN}.zip" "${LAST_FN}"
         else
-            zip $PARAMS -r "${D}/${ARCHIVE_NAME}" -@ < $TEMP_FILE
+            zip $PARAMS -r "${D}/${ARCHIVE_NAME}" %s
         fi
-        rm $TEMP_FILE
+
+# vscode
+# (selected as default for only a small subset of file extensions)
+# ----------------------------------------------------------------------------
++= f \.(md|css|scss|json|html)$ | f \.[jt]sx?$
++ f \.(txt|md|css|scss|json|xml|html|htm|svg|sh)$ | f \.[jt]sx?$ | f ^\. & t r | t d
+v       Open in vscode
+        code %s
+
+# geany
+# (geany still is fast af)
+# ----------------------------------------------------------------------------
++ f \.(txt|md|css|scss|json|xml|htm|html|htm|svg|old|sh)$ | f \.[jt]sx?$ | f ^\. & t r
+e       Open in geany
+        geany -t -n -p -s -m %s 2>/dev/null &
+
+# gimp
+# ----------------------------------------------------------------------------
++= f \.(jpg|jpeg|png|gif)$
++ f \.(jpg|jpeg|png|gif|svg|tiff|pcx|tga)$ & t r
+g       Open in gimp
+        gimp %s
+
+# pngquant
+# - please do `apt install pngquant`
+# - similar to pngcrush, will use 8bit + alpha by default
+# - no floyd steinberg dithering + force overwrite original
+# ----------------------------------------------------------------------------
++ f \.png$
+O       Optimize with png-quant (overwrite)
+        pngquant --speed 1 --ext .png --nofs --force %s
+
+# webstorm ¯\_(ツ)_/¯
+# - every regular file, for projects I prefer the toolbox
+# - will open in last used workspace!
+# ----------------------------------------------------------------------------
++ t r
+w       Open in current webStorm
+        webstorm %s
+
+# xdg open
+# - interestingly this is NOT the same as pressing enter
+# - on folders it might be especially useful
+# ----------------------------------------------------------------------------
+o       Open with default app
+        xdg-open %s
+
+# tmux
+# ----------------------------------------------------------------------------
+t       Tmux split
+        tmux split-window
 
 ##############################################################################
 # Default menu items below
