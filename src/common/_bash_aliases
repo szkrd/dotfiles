@@ -10,7 +10,7 @@ alias cd....="cd ../.."
 alias rebash="[[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile"
 alias realias="unalias -a && rebash"
 alias xx="exit"
-alias mc="EDITOR=mcedit MC=true . /usr/lib/mc/mc-wrapper.sh"
+alias mc="MC=true . /usr/lib/mc/mc-wrapper.sh"
 
 # much short, very magic
 alias g="git"
