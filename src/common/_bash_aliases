@@ -10,7 +10,7 @@ alias cd....="cd ../.."
 alias rebash="[[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile"
 alias realias="unalias -a && rebash"
 alias xx="exit"
-alias mc="MC=true . /usr/lib/mc/mc-wrapper.sh"
+alias mc=". /usr/lib/mc/mc-wrapper.sh"
 
 # much short, very magic
 alias g="git"
@@ -107,7 +107,7 @@ function parse_git_branch() {
 
 # detect mc subshell in prompt (requires MC=true of course)
 function is_mc() {
-  if [ "${MC}" = "true" ]; then
+  if [ -n "${MC_SID}" ]; then
     echo -e " ${ORANGE}MC▾${NOCOLOR}"
   fi
 }
