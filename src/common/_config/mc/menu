@@ -10,6 +10,7 @@ shell_patterns=0
 #  - @ = Do something on the current file(s)
 #  - C = Copy path(s) with filename to clipboard
 #  - c = Copy files
+#  - y = Copy contents to clipboard
 #  - U = Cut files
 #  - p = Paste files here
 #  - x = Extract here
@@ -116,6 +117,33 @@ C       Copy paths with filename to clipboard
             FN="${FN}%d/${i}\n"
         done
         echo -n $FN | sed 's/ /\\ /g' | xclip -i -sel p -f | xclip -i -sel c
+
+# copy contents to clipboard
+# - copy something to the clipboard, then use
+#   `xclip -selection clipboard -o -t TARGETS` to see possible targets
+# - so far text/plain and some images are supported by the script
+# - svg is copied as text, I mostly edit them manually anyway
+# ----------------------------------------------------------------------------
++ f \.(png|ico|bmp|gif|jpg|jpeg)$ & ! t t
+y       Copy image to clipboard
+        FN=%d/%f
+        if [ %f = ".." ]; then
+            exit 1
+        fi
+        EXT="$(echo %f | sed 's/.*\.//')"
+        if [ $EXT = "jpg" ]; then
+            xclip -selection clipboard -t image/jpeg -i %f
+            exit 0
+        fi
+        xclip -selection clipboard -t image/$EXT -i %f
+
++ ! f \.(svg|png|ico|bmp|gif|jpg|jpeg)$ & ! t t
+y       Copy file as text to clipboard
+        FN=%d/%f
+        if [ %f = ".." ]; then
+            exit 1
+        fi
+        xclip -selection clipboard -t TEXT -i %f
 
 # clipboard files
 # - cut/copy/paste using desktop environment "clipboard buffers"
@@ -244,13 +272,20 @@ w       Open in current webStorm
 # xdg open
 # - interestingly this is NOT the same as pressing enter
 # - on folders it might be especially useful
+# - or we can use MC_XDG_OPEN and nohup (https://wiki.archlinux.org/index.php/Midnight_Commander)
 # ----------------------------------------------------------------------------
 o       Open with default app
         xdg-open %s
 
 # tmux
+# - split current pane horizontally
+# - will only work inside a tmux session!
 # ----------------------------------------------------------------------------
 t       Tmux split
+        if [ -z "${TMUX}" ]; then
+            echo "Not in tmux!"
+            exit 1
+        fi
         tmux split-window
 
 ##############################################################################
