@@ -37,6 +37,11 @@ HISTFILESIZE=2000
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# instead of putting thins into .inputrc:
+# use single tab for autocomplete + ignore case
+bind 'set show-all-if-ambiguous on'
+bind 'set completion-ignore-case on'
+
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
