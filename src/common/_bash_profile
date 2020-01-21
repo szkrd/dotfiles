@@ -168,3 +168,10 @@ fi
 
 # remove path dups (finally)
 PATH="$(perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, $ENV{PATH}))')"
+
+# and check if the path has invalid items, which would slow down autocomplete big time
+while read -d ':' p; do
+  if [ ! -d "${p}" ]; then
+    echo -e "Path dir \"${RED}${p}${NOCOLOR}\" missing!"
+  fi
+done <<< "$PATH:"
