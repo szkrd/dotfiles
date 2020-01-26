@@ -184,3 +184,4 @@ while read -d ':' p; do
     echo -e "Path dir \"${RED}${p}${NOCOLOR}\" missing!"
   fi
 done <<< "$PATH:"
+
