@@ -18,16 +18,22 @@ alias cd....="cd ../.."
 MCD_PREV_DIR=~
 MCD_SAVED_DIR=~
 function mcd() {
+  ESC=$(printf '\033')
+  SHARE_FILE=/tmp/mcd-pwd
+  MCD_SHARED_DIR=~
+  if [ -f "${SHARE_FILE}" ]; then MCD_SHARED_DIR=$(cat /tmp/mcd-pwd); fi
   if [ "${1}" = '-' ]; then cd $MCD_PREV_DIR; return 0; fi
   if [ "${1}" = '--' ]; then cd $MCD_SAVED_DIR; return 0; fi
+  if [ "${1}" = '---' ]; then cd $MCD_SHARED_DIR; return 0; fi
   if [ "${1}" = 'save' ]; then MCD_SAVED_DIR=$(pwd); return 0; fi
+  if [ "${1}" = 'share' ]; then pwd > $SHARE_FILE; return 0; fi
   # you need to have an mc menu file
   FN=~/.config/mc/hotlist
   if [ ! -f "${FN}" ]; then echo -e "${RED}mc hotlist file missing${NOCOLOR}"; return 1; fi
   # help: list the mc directory hotlist
   if [ -z "${1}" ]; then
-    grep ENTRY ~/.config/mc/hotlist | sed s'/\s*ENTRY "//' | sed "s/\" URL \"/ ${esc}[1;30m=> /" | sed "s/\"$/${esc}[0m/"
-    echo -e "${DARKGRAY}saved: ${MCD_SAVED_DIR}\nprev: ${MCD_PREV_DIR}${NOCOLOR}" | sed "s/\/home\/$(whoami)/~/g"
+    grep ENTRY ~/.config/mc/hotlist | sed s'/\s*ENTRY "//' | sed "s/\" URL \"/ ${ESC}[1;30m=> /" | sed "s/\"$/${ESC}[0m/"
+    echo -e "${DARKGRAY}saved: ${MCD_SAVED_DIR}\nshared: ${MCD_SHARED_DIR}\nprev: ${MCD_PREV_DIR}${NOCOLOR}" | sed "s/\/home\/$(whoami)/~/g"
     return 0
   fi
   # first try to grep it with `"X "` in the mc hotlist (useful for prefixed lists), then go for a looser grep
