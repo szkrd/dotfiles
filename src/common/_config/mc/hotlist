@@ -1,0 +1,12 @@
+# `ctrl + \` in mc; numbers are just helpers; see also: mcd function in bash_aliases
+ENTRY "0 home" URL "/home/szabi"
+ENTRY "1 downloads" URL "/home/szabi/Downloads"
+ENTRY "2 desktop" URL "/home/szabi/Desktop"
+ENTRY "3 documents" URL "/home/szabi/Documents"
+ENTRY "4 nextcloud" URL "/home/szabi/Nextcloud"
+ENTRY "5 projects" URL "/home/szabi/Projects"
+ENTRY "6 planorama" URL "/home/szabi/Projects/planorama"
+ENTRY "7 services" URL "/home/szabi/Projects/planorama/services"
+GROUP "8 [services]"
+  ENTRY "81 portal" URL "/home/szabi/Projects/planorama/services/portal"
+ENDGROUP

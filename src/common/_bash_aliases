@@ -5,12 +5,39 @@ alias ll='ls -la'
 alias la='ls -A'
 alias l='ls -CF'
 alias cls='clear && echo -e "\ec"'
-alias cd..="cd .."
-alias cd....="cd ../.."
 alias rebash="[[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile"
 alias realias="unalias -a && rebash"
 alias xx="exit"
+
+# mc and cd trickery (mcd tries to match the param from the mc hotlist and then chdir there)
+function mdcd () { mkdir -p "$@" && cd "$@"; }
+alias md="mdcd"
 alias mc=". /usr/lib/mc/mc-wrapper.sh"
+alias cd..="cd .."
+alias cd....="cd ../.."
+MCD_PREV_DIR=~
+MCD_SAVED_DIR=~
+function mcd() {
+  if [ "${1}" = '-' ]; then cd $MCD_PREV_DIR; return 0; fi
+  if [ "${1}" = '--' ]; then cd $MCD_SAVED_DIR; return 0; fi
+  if [ "${1}" = 'save' ]; then MCD_SAVED_DIR=$(pwd); return 0; fi
+  # you need to have an mc menu file
+  FN=~/.config/mc/hotlist
+  if [ ! -f "${FN}" ]; then echo -e "${RED}mc hotlist file missing${NOCOLOR}"; return 1; fi
+  # help: list the mc directory hotlist
+  if [ -z "${1}" ]; then
+    grep ENTRY ~/.config/mc/hotlist | sed s'/\s*ENTRY "//' | sed "s/\" URL \"/ ${esc}[1;30m=> /" | sed "s/\"$/${esc}[0m/"
+    echo -e "${DARKGRAY}saved: ${MCD_SAVED_DIR}\nprev: ${MCD_PREV_DIR}${NOCOLOR}" | sed "s/\/home\/$(whoami)/~/g"
+    return 0
+  fi
+  # first try to grep it with `"X "` in the mc hotlist (useful for prefixed lists), then go for a looser grep
+  TARGET=$(grep ENTRY ~/.config/mc/hotlist | grep "\"${1} " | head -1 | sed 's/.*URL "//' | sed 's/"$//')
+  if [ $(echo $TARGET | wc -c) -gt 1 ]; then MCD_PREV_DIR=$(pwd); cd $TARGET; return 0; fi
+  # since "X nnn" was not found (for example `2` with `1 foobar`), let's try "N xxx" (in the `foobar`)
+  TARGET=$(grep ENTRY ~/.config/mc/hotlist | sed 's/\s*ENTRY "[0-9A-Z]*\s//' | grep "^${1}" | head -1 |sed 's/.*URL "//' | sed 's/"$//')
+  if [ $(echo $TARGET | wc -c) -gt 1 ]; then MCD_PREV_DIR=$(pwd); cd $TARGET; return 0; fi
+  cd $1
+}
 
 # much short, very magic
 alias g="git"
@@ -89,6 +116,7 @@ alias vscode='code'
 alias edbp='na ~/.bash_profile'
 alias edbrc='na ~/.bashrc'
 alias edba='na ~/.bash_aliases'
+alias edbs='na ~/.bash_secret'
 alias edgc='na ~/.gitconfig'
 alias edgi='na ~/.gitignore'
 
@@ -106,7 +134,7 @@ function parse_git_branch() {
   git branch --color=never 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' | sed -e 's/feature/F/'
 }
 
-# detect mc subshell in prompt (requires MC=true of course)
+# detect mc subshell in prompt
 function is_mc() {
   if [ -n "${MC_SID}" ]; then
     echo -e " ${ORANGE}MC▾${NOCOLOR}"
@@ -114,8 +142,6 @@ function is_mc() {
 }
 
 # misc
-function mdcd () { mkdir -p "$@" && cd "$@"; }
-alias md="mdcd"
 function title() { echo -ne "\033]0;${1}\007"; }
 alias t="title"
 function titleprefix() { TITLEPREFIX="$1"; }
