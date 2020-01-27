@@ -32,18 +32,28 @@ function mcd() {
   if [ ! -f "${FN}" ]; then echo -e "${RED}mc hotlist file missing${NOCOLOR}"; return 1; fi
   # help: list the mc directory hotlist
   if [ -z "${1}" ]; then
-    grep ENTRY ~/.config/mc/hotlist | sed s'/\s*ENTRY "//' | sed "s/\" URL \"/ ${ESC}[1;30m=> /" | sed "s/\"$/${ESC}[0m/"
+    grep ENTRY ${FN} | sed s'/\s*ENTRY "//' | sed "s/\" URL \"/ ${ESC}[1;30m=> /" | sed "s/\"$/${ESC}[0m/"
     echo -e "${DARKGRAY}saved: ${MCD_SAVED_DIR}\nshared: ${MCD_SHARED_DIR}\nprev: ${MCD_PREV_DIR}${NOCOLOR}" | sed "s/\/home\/$(whoami)/~/g"
     return 0
   fi
   # first try to grep it with `"X "` in the mc hotlist (useful for prefixed lists), then go for a looser grep
-  TARGET=$(grep ENTRY ~/.config/mc/hotlist | grep "\"${1} " | head -1 | sed 's/.*URL "//' | sed 's/"$//')
+  TARGET=$(grep ENTRY ${FN} | grep "\"${1} " | head -1 | sed 's/.*URL "//' | sed 's/"$//')
   if [ $(echo $TARGET | wc -c) -gt 1 ]; then MCD_PREV_DIR=$(pwd); cd $TARGET; return 0; fi
   # since "X nnn" was not found (for example `2` with `1 foobar`), let's try "N xxx" (in the `foobar`)
-  TARGET=$(grep ENTRY ~/.config/mc/hotlist | sed 's/\s*ENTRY "[0-9A-Z]*\s//' | grep "^${1}" | head -1 |sed 's/.*URL "//' | sed 's/"$//')
+  TARGET=$(grep ENTRY ${FN} | sed 's/\s*ENTRY "[0-9A-Z]*\s//' | grep "^${1}" | head -1 |sed 's/.*URL "//' | sed 's/"$//')
   if [ $(echo $TARGET | wc -c) -gt 1 ]; then MCD_PREV_DIR=$(pwd); cd $TARGET; return 0; fi
   cd $1
 }
+function _mcd() {
+  local cur
+  cur=${COMP_WORDS[COMP_CWORD]}
+  FN=~/.config/mc/hotlist
+  if [ ! -f "${FN}" ]; then return 1; fi
+  WORDS=$(grep ENTRY ${FN} | sed 's/\s*ENTRY "[0-9A-Z]*\s//' | sed 's/[" ].*//' | tr '\n' ' ')
+  COMPREPLY=($(compgen -W "save share ${WORDS}" -- ${cur}))
+  return 0
+}
+complete -F _mcd mcd
 
 # much short, very magic
 alias g="git"
@@ -98,25 +108,17 @@ function current_node() {
   fi
 }
 
-if [ "$PLATFORM" = "linux" ]; then
-  # primary and secondary (aka. clipboard)
-  alias pbcopy='xclip -i -sel p -f | xclip -i -sel c'
-  alias pbpaste='xclip -selection clipboard -o'
-fi
-
-# editors
+# editors and copy-paste (pri and sec)
 alias nano='nano -x -w -z -H'
 alias na='nano'
 alias geany='geany'
 if [ "$PLATFORM" = "macos" ]; then alias geany='open -a geany'; fi
 if [ "$PLATFORM" = "mingw" ]; then alias geany='/c/Program\ Files\ \(x86\)/Geany/bin/geany.exe'; fi
 alias vscode='code'
-
-# frontend helpers
-#alias felog='d logs viddo_frontend_1 -f'
-#alias feenter="d exec -it viddo_frontend_1 bash"
-#alias feserve="APP_WEBPACK_PORT=4000 NODE_ENV=development npx webpack-dev-server"
-#function fenode () { d exec -it viddo_frontend_1 sh -c "node $*"; }
+if [ "$PLATFORM" = "linux" ]; then
+  alias pbcopy='xclip -i -sel p -f | xclip -i -sel c'
+  alias pbpaste='xclip -selection clipboard -o'
+fi
 
 # edit popular files
 alias edbp='na ~/.bash_profile'
@@ -126,7 +128,7 @@ alias edbs='na ~/.bash_secret'
 alias edgc='na ~/.gitconfig'
 alias edgi='na ~/.gitignore'
 
-# git
+# git prompt
 function markup_git_branch() {
   if [[ -n $@ ]]; then
     if [[ -z $(git status --porcelain 2> /dev/null) ]]; then
