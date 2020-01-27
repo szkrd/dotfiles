@@ -119,12 +119,13 @@ alias vscode='code'
 #function fenode () { d exec -it viddo_frontend_1 sh -c "node $*"; }
 
 # edit popular files
-alias edbp='na ~/.bash_profile'
-alias edbrc='na ~/.bashrc'
-alias edba='na ~/.bash_aliases'
-alias edbs='na ~/.bash_secret'
-alias edgc='na ~/.gitconfig'
-alias edgi='na ~/.gitignore'
+alias ed-bp="${EDITOR} ~/.bash_profile"
+alias ed-brc="${EDITOR} ~/.bashrc"
+alias ed-ba="${EDITOR} ~/.bash_aliases"
+alias ed-bs="${EDITOR} ~/.bash_secret"
+alias ed-gc="${EDITOR} ~/.gitconfig"
+alias ed-gi="${EDITOR} ~/.gitignore"
+alias ed-mchot="${EDITOR} ~/.config/mc/hotlist"
 
 # git
 function markup_git_branch() {
