@@ -9,4 +9,7 @@ ENTRY "6 planorama" URL "/home/szabi/Projects/planorama"
 ENTRY "7 services" URL "/home/szabi/Projects/planorama/services"
 GROUP "8 [services]"
   ENTRY "81 portal" URL "/home/szabi/Projects/planorama/services/portal"
+  ENTRY "82 proxy" URL "/home/szabi/Projects/planorama/services/PlanoProxy"
+  ENTRY "83 reports" URL "/home/szabi/Projects/planorama/services/Reports"
+  ENTRY "84 devscripts" URL "/home/szabi/Projects/planorama/DevScripts"
 ENDGROUP

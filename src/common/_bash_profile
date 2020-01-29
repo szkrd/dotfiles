@@ -126,6 +126,10 @@ export LESSCHARSET=UTF-8
 # may not be a good idea, since in certain cases it may eat line endings)
 export LESS=-XR
 
+# work related (disable chaosmonkey, disable export service task runners)
+export CHAOS_CRASH_ENABLED="false"
+export DISABLE_SINGLE_INSTANCE_TASKS="true"
+
 # docker drives me nuts
 if [ "$PLATFORM" = "mingw" ]; then export COMPOSE_CONVERT_WINDOWS_PATHS=1; fi
 
