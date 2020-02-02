@@ -179,6 +179,20 @@ if [ ! -z "${NVMUSE}" ]; then
   nvm use ${NVMUSE}
 fi
 
+# home-brew officially supports linux (https://docs.brew.sh/Homebrew-on-Linux)
+# and there are some stuff that aren't in apt repos or just very old there
+# (this export list has been squeezed out of "eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# do NOT add brew's installer trickery to .profile please!)
+BREWPREFIX="/home/linuxbrew/.linuxbrew"
+if [ -f "${BREWPREFIX}/bin/brew" ]; then
+  export HOMEBREW_PREFIX="${BREWPREFIX}";
+  export HOMEBREW_CELLAR="${BREWPREFIX}/Cellar";
+  export HOMEBREW_REPOSITORY="${BREWPREFIX}/Homebrew";
+  export PATH="${BREWPREFIX}/bin:${BREWPREFIX}/sbin${PATH+:$PATH}";
+  export MANPATH="${BREWPREFIX}/share/man${MANPATH+:$MANPATH}:";
+  export INFOPATH="${BREWPREFIX}/share/info${INFOPATH+:$INFOPATH}";
+fi
+
 # remove path dups (finally)
 PATH="$(perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, $ENV{PATH}))')"
 
