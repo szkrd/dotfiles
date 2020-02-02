@@ -155,21 +155,27 @@ fi
 # (nvm install 10, nvm install 12, nvm use 12, nvm alias default 10, etc. works)
 # (based on https://www.growingwiththeweb.com/2018/01/slow-nvm-init.html#comment-4188210568)
 if [ -d "${HOME}/.nvm" ]; then
-  export NVM_SYMLINK_CURRENT=true
-  export NVM_DIR=~/.nvm
-  source $NVM_DIR/nvm.sh --no-use
-  NODE_VERSION=$(ls -1 ~/.nvm/versions/node/ | grep --color=never "v$(cat $NVM_DIR/alias/default)" | tail -n1)
-  FILE=/etc/resolv.conf
-  if [ -f "$NVM_DIR/versions/node/$NODE_VERSION/bin/node" ]; then
-    export PATH="$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH"
-    ln -sf $(which node) $NVM_DIR/current
-  else
-    # FIXME this may happen with `nvm alias default node`
-    echo "warning: nvm fallback!"
-    # default nvm (kinda slow, because of the sanity checks)
+  if [ "${PLATFORM}" = "macos" ]; then
     export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+    [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+    [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+  elif [ "${PLATFORM}" = "linux" ]; then
+    export NVM_SYMLINK_CURRENT=true
+    export NVM_DIR=~/.nvm
+    source $NVM_DIR/nvm.sh --no-use
+    NODE_VERSION=$(ls -1 ~/.nvm/versions/node/ | grep --color=never "v$(cat $NVM_DIR/alias/default)" | tail -n1)
+    FILE=/etc/resolv.conf
+    if [ -f "$NVM_DIR/versions/node/$NODE_VERSION/bin/node" ]; then
+        export PATH="$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH"
+        ln -sf $(which node) $NVM_DIR/current
+    else
+        # FIXME this may happen with `nvm alias default node`
+        echo "warning: nvm fallback!"
+        # default nvm (kinda slow, because of the sanity checks)
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+    fi
   fi
 fi
 
