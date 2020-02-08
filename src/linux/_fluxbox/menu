@@ -1,0 +1,35 @@
+[begin] (+)
+  [exec] (chrome) {/opt/google/chrome/google-chrome} <>
+  [exec] (chromium) {chromium} <>
+  [exec] (firefox) {firefox} <>
+  [exec] (geany) {geany} <>
+  [exec] (gimp) {gimp} <>
+  [exec] (nautilus) {nautilus} <>
+  [exec] (terminal) {gnome-terminal} <>
+  [exec] (toolbox) {~/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox} <>
+  [exec] (vscode) {GTK_THEME=Adwaita-dark code} <>
+  [submenu] (...) {}
+    [exec] (keepass) {keepassxc} <>
+    [exec] (robomongo) {~/bin/robomongo} <>
+  [end]
+  [separator]
+  [submenu] (settings) {}
+    [exec] (gnome-control-center) {XDG_CURRENT_DESKTOP=GNOME gnome-control-center} <>
+    [exec] (tint2) {tint2conf} <>
+  [end]
+  [submenu] (flux) {}
+    [config] (configuration)
+    [submenu] (local styles) {}
+      [stylesdir] (~/.fluxbox/styles)
+    [end]
+    [workspaces] (workspaces)
+    [reconfig] (reconfigure)
+    [restart] (restart)
+    [exit] (exit)
+  [end]
+  [exec] (su poweroff) {sakura -r 3 -c 45 --geometry +40+40 -t POWEROFF -e "su -c poweroff"}
+  [exec] (su reboot) {sakura -r 3 -c 45 --geometry +40+40 -t REBOOT -e "su -c reboot"}
+  #[submenu] (generated) {}
+  #  [include] (/etc/X11/fluxbox/fluxbox-menu)
+  #[end]
+[end]

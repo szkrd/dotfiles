@@ -1,0 +1,7 @@
+# One would think that the gnome 3 people backported their fancy
+# Adwaita theme to gtk2 and that after a couple of years all the
+# quirks had been ironed out, but of course this is not the case
+
+gtk-icon-theme-name = "Clearlooks"
+gtk-theme-name = "Clearlooks"
+gtk-font-name = "DejaVu Sans 11"

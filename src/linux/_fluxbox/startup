@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# to avoid gnome control center empty window
+# (for the window decorations installing the gtk3-nocsd package may help)
+export XDG_CURRENT_DESKTOP=GNOME
+
+ulimit -n 17000
+
+# apt install pnmixer pavucontrol fbsetroot tint2 conky clipit
+xset s off -dpms &
+tint2 &
+fbsetroot -solid grey19 &
+pnmixer &
+~/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox --minimize &
+nm-applet &
+nextcloud &
+clipit &
+conky -p 5 -d &
+exec fluxbox
