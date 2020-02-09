@@ -119,6 +119,8 @@ if [ "$PLATFORM" = "linux" ]; then
   alias pbcopy='xclip -i -sel p -f | xclip -i -sel c'
   alias pbpaste='xclip -selection clipboard -o'
 fi
+function copy-cat() { cat $@ | pbcopy; }
+function copy-path() { readlink -f ${@:-.}; readlink -f ${@:-.} | head -c -1 | pbcopy; }
 
 # edit popular files
 alias ed-bp="${EDITOR} ~/.bash_profile"
