@@ -122,7 +122,7 @@ Mod4 P :Exec lxrandr
 Mod4 L :Exec slock
 Mod1 Mod4 L :Exec sleep 1 && xset dpms force standby
 None Print :Exec gnome-screenshot -f ~/Pictures/Screenshots/$(date +'%Y%m%d_%H%M%S').png
-Mod4 Print :Exec ksnip -r
+Mod4 Print :Exec env -u SESSION_MANAGER ksnip -r
 
 ## `win + w, win + w` = use arrow keys to resize & move window, esc exits
 ## `q/w/e/d/c/x/z/a/s` to snap

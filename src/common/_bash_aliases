@@ -121,6 +121,7 @@ if [ "$PLATFORM" = "linux" ]; then
 fi
 function copy-cat() { cat $@ | pbcopy; }
 function copy-path() { readlink -f ${@:-.}; readlink -f ${@:-.} | head -c -1 | pbcopy; }
+alias copy-fn='copy-path'
 
 # edit popular files
 alias ed-bp="${EDITOR} ~/.bash_profile"

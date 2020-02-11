@@ -5,4 +5,4 @@ export CHAOS_CRASH_ENABLED="false"
 export DISABLE_SINGLE_INSTANCE_TASKS="true"
 
 # filer can fall back to an url prefix for 404 images
-NOT_FOUND_FALLBACK=""
+export NOT_FOUND_FALLBACK=""
