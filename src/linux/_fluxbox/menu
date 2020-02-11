@@ -18,6 +18,7 @@
     [exec] (tint2) {tint2conf} <>
   [end]
   [submenu] (flux) {}
+    [exec] (edit files) {code -n --folder-uri ~/.fluxbox ~/.fluxbox/init ~/.fluxbox/startup ~/.fluxbox/keys ~/.fluxbox/menu}
     [config] (configuration)
     [submenu] (local styles) {}
       [stylesdir] (~/.fluxbox/styles)

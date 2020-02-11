@@ -10,7 +10,7 @@ const commandExistsSync = require('command-exists').sync
 
 const getLogger = (color) => (s, ...args) => console.log(chalk[color](s), ...(args.length ? args : []))
 const log = { error: getLogger('red'), warn: getLogger('yellow'), info: getLogger('white') }
-const args = process.argv.slice(2)
+let args = process.argv.slice(2)
 let scriptLocation = process.argv[1]
 try { scriptLocation = fs.readlinkSync(process.argv[1]) } catch (err) {}
 const projectLocation = path.join(path.dirname(scriptLocation), '/..')
@@ -20,7 +20,7 @@ const isLinux = platform === 'linux'
 const diffTool = process.env.DIFF_TOOL || 'meld'
 let platformNiceName = { darwin: 'macos', linux: 'linux', win: 'win32' }[platform] || platform
 
-const fnTemplates = {
+let fnTemplates = {
   br: 'bash_profile', // alias for bashrc
   bp: 'bash_profile',
   ba: 'bash_aliases',
@@ -31,6 +31,16 @@ const fnTemplates = {
   screen: 'screenrc',
   mcmenu: 'config/mc/menu',
   mcdirs: 'config/mc/hotlist'
+}
+
+// fluxbox related files
+if (args.includes('flux')) {
+  args = args.filter(s => s !== 'flux')
+  fnTemplates = {
+    init: 'fluxbox/init',
+    keys: 'fluxbox/keys',
+    menu: 'fluxbox/menu'
+  }
 }
 
 const getDiffByteCount = (a, b) => {
