@@ -3,6 +3,7 @@
 # to avoid gnome control center empty window
 # (for the window decorations installing the gtk3-nocsd package may help)
 export XDG_CURRENT_DESKTOP=GNOME
+export GTK_CSD=0
 
 ulimit -n 17000
 
