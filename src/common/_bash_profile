@@ -78,6 +78,11 @@ if [ -f ~/.bash_secret ]; then
   . ~/.bash_secret
 fi
 
+# work only env vars
+if [ -f ~/.bash_env_work ]; then
+  . ~/.bash_env_work
+fi
+
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -115,7 +120,7 @@ PS1="\[${GREEN}\]\u\$(is_mc)\$(current_node) \[${LIGHTBLUE}\]\w\$(markup_git_bra
 
 PATH=$PATH:~/bin:~/.local/bin:~/bin/rabbitmq/sbin:~/Nextcloud/Work/bin:~/Projects/planorama/DevScripts/services
 if [ "$PLATFORM" = "mingw" ]; then PATH=$PATH:/c/git-sdk-64/usr/bin/; fi
-EDITOR=nano
+export EDITOR=nano
 GUI_EDITOR=geany
 export LANG=en_EN.UTF-8
 export LC_CTYPE=en_US.UTF-8
@@ -125,10 +130,6 @@ export LESSCHARSET=UTF-8
 # do not clear on exit + use raw control chars (which may or
 # may not be a good idea, since in certain cases it may eat line endings)
 export LESS=-XR
-
-# work related (disable chaosmonkey, disable export service task runners)
-export CHAOS_CRASH_ENABLED="false"
-export DISABLE_SINGLE_INSTANCE_TASKS="true"
 
 # docker drives me nuts
 if [ "$PLATFORM" = "mingw" ]; then export COMPOSE_CONVERT_WINDOWS_PATHS=1; fi

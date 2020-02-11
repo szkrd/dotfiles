@@ -1,0 +1,8 @@
+# multiple services
+export CHAOS_CRASH_ENABLED="false"
+
+# disable export service runners
+export DISABLE_SINGLE_INSTANCE_TASKS="true"
+
+# filer can fall back to an url prefix for 404 images
+NOT_FOUND_FALLBACK=""
