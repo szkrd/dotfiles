@@ -20,13 +20,13 @@ OnWindow Mod1 Mouse2 :Lower
 OnWindow Mod4 Mouse2 :Raise
 
 ## `double click + titlebar` = minimize
-## `shift + scroll + titlebar` = shade
+## `scroll + titlebar` = shade
 ## `left click + titlebar` = move the window
 ## `middle click + titlebar` = lower window
 ## `right click + titlebar` = for a menu of options
 OnTitlebar Double Mouse1 :Minimize
-OnTitlebar Shift Mouse4 :ShadeOn
-OnTitlebar Shift Mouse5 :ShadeOff
+OnTitlebar Mouse4 :ShadeOn
+OnTitlebar Mouse5 :ShadeOff
 OnTitlebar Mouse1 :MacroCmd {Raise} {Focus} {ActivateTab}
 OnTitlebar Move1  :StartMoving
 OnTitlebar Mouse2 :Lower
@@ -34,10 +34,10 @@ OnTitlebar Mouse3 :WindowMenu
 
 ## `alt + tab` = switch all task
 ## `win + tab` = switch non-minified task
-Mod1 Tab :NextWindow {groups} (workspace=[current])
-Mod1 Shift Tab :PrevWindow {groups} (workspace=[current])
-Mod4 Tab :NextWindow {groups} (workspace=[current]) (minimized=no)
-Mod4 Shift Tab :PrevWindow {groups} (workspace=[current]) (minimized=no)
+Mod1 Tab :NextWindow {groups} (workspace=[current]) (minimized=no) (shaded=no)
+Mod1 Shift Tab :PrevWindow {groups} (workspace=[current]) (minimized=no) (shaded=no)
+Mod4 Tab :NextWindow {groups} (workspace=[current])
+Mod4 Shift Tab :PrevWindow {groups} (workspace=[current])
 
 ## `control + click + titlebar` = and drag to create wtab
 ## `win + 1/2/3/4/5/6/7/8/9` = change wtab
@@ -106,6 +106,7 @@ Control Mod1 Delete :Exit
 ## (toggle toolbar, tray, conky)
 Mod4 S       :MacroCmd {SetResourceValue session.screen0.toolbar.visible false} {SetResourceValue session.screen0.slit.autoHide true} {Exec pkill conky} {Reconfigure}
 Mod1 Mod4 S  :MacroCmd {SetResourceValue session.screen0.toolbar.visible true} {SetResourceValue session.screen0.slit.autoHide false} {Exec conky -d} {Reconfigure}
+Control Mod4 S  :MacroCmd {SetResourceValue session.screen0.toolbar.visible true} {SetResourceValue session.screen0.toolbar.autoHide true} {SetResourceValue session.screen0.slit.autoHide true} {Exec conky -d} {Reconfigure}
 
 ## application launchers
 Mod4 F :Exec nautilus
