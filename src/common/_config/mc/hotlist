@@ -12,4 +12,5 @@ GROUP "8 [services]"
   ENTRY "82 proxy" URL "/home/szabi/Projects/planorama/services/PlanoProxy"
   ENTRY "83 reports" URL "/home/szabi/Projects/planorama/services/Reports"
   ENTRY "84 devscripts" URL "/home/szabi/Projects/planorama/DevScripts"
+  ENTRY "85 filer" URL "/home/szabi/Projects/planorama/services/PlanoFiler"
 ENDGROUP

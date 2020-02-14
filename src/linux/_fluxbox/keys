@@ -34,6 +34,8 @@ OnTitlebar Mouse3 :WindowMenu
 
 ## `alt + tab` = switch all task
 ## `win + tab` = switch non-minified task
+Mod1 grave :NextWindow {groups} (workspace=[current]) (minimized=no) (shaded=no) (Class=[current])
+Mod1 Shift grave :NextWindow {groups} (workspace=[current]) (minimized=no) (shaded=no) (Class=[current])
 Mod1 Tab :NextWindow {groups} (workspace=[current]) (minimized=no) (shaded=no)
 Mod1 Shift Tab :PrevWindow {groups} (workspace=[current]) (minimized=no) (shaded=no)
 Mod4 Tab :NextWindow {groups} (workspace=[current])
@@ -99,8 +101,8 @@ Control Mod1 Delete :Exit
 ## volume settings (if these don't work, use xev to find out the keycodes)
 ## see also: https://wiki.archlinux.org/index.php/PulseAudio#Keyboard_volume_control
 121 :Exec pactl set-sink-mute 0 toggle
-122 :Exec pactl set-sink-volume 0 -5%
-123 :Exec pactl set-sink-volume 0 +5%
+122 :Exec pactl set-sink-mute 0 false && pactl set-sink-volume 0 -5%
+123 :Exec pactl set-sink-mute 0 false && pactl set-sink-volume 0 +5%
 
 ## silent mode
 ## (toggle toolbar, tray, conky)
@@ -122,7 +124,10 @@ Mod4 P :Exec lxrandr
 #Mod4 L :Exec gnome-screensaver-command --lock
 Mod4 L :Exec slock
 Mod1 Mod4 L :Exec sleep 1 && xset dpms force standby
+Mod4 M :Exec pactl set-sink-mute 0 1
+Mod1 Mod4 M :Exec pactl set-sink-mute 0 0
 None Print :Exec gnome-screenshot -f ~/Pictures/Screenshots/$(date +'%Y%m%d_%H%M%S').png
+Control Shift Print :Exec maim -s | xclip -selection clipboard -t image/png
 Mod4 Print :Exec env -u SESSION_MANAGER ksnip -r
 
 ## `win + w, win + w` = use arrow keys to resize & move window, esc exits
