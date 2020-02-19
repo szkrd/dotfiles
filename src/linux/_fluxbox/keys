@@ -129,6 +129,7 @@ Mod1 Mod4 M :Exec pactl set-sink-mute 0 0
 None Print :Exec gnome-screenshot -f ~/Pictures/Screenshots/$(date +'%Y%m%d_%H%M%S').png
 Control Shift Print :Exec maim -s | xclip -selection clipboard -t image/png
 Mod4 Print :Exec env -u SESSION_MANAGER ksnip -r
+Mod4 F12 :Exec xterm -geometry 80x10+0+32 -T record-video -hold -e ~/bin/record-screen.sh
 
 ## `win + w, win + w` = use arrow keys to resize & move window, esc exits
 ## `q/w/e/d/c/x/z/a/s` to snap
