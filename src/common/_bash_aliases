@@ -61,7 +61,12 @@ alias y="yarn"
 if [ "$PLATFORM" = "mingw" ]; then alias y="node /c/Users/szabi/scoop/apps/yarn/current/Yarn/lib/cli.js"; fi
 alias d="docker"
 if [ "$PLATFORM" = "mingw" ]; then alias d='winpty docker'; fi
-alias p='pm2'
+function p() {
+  if [ "${1}" = 'le' ]; then pm2 l | grep -v '│ 0    │'; return 0; fi
+  if [ "${1}" = 'lg' ]; then pm2 l | grep --color=never -Ei "${2}| id  |────────────" | grep -iz ${2}; return 0; fi
+  if [ "${1}" = 'ra' ]; then pm2 reset all; return 0; fi
+  pm2 $@
+}
 
 # npm, nvm and yarn
 alias nuke="rm -rf ./node_modules && npm cache clear --force && npm install --no-shrinkwrap --update-binary"
