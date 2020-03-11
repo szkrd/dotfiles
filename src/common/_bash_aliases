@@ -16,28 +16,25 @@ alias mc=". /usr/lib/mc/mc-wrapper.sh"
 alias cd..="cd .."
 alias cd....="cd ../.."
 MCD_PREV_DIR=~
-MCD_SAVED_DIR=~
 function mcd() {
-  ESC=$(printf '\033')
-  SHARE_FILE=/tmp/mcd-pwd
-  MCD_SHARED_DIR=~
-  if [ -f "${SHARE_FILE}" ]; then MCD_SHARED_DIR=$(cat /tmp/mcd-pwd); fi
+  local ESC=$(printf '\033')
+  local SAVE_FILE=/tmp/mcd-pwd
+  local MCD_SAVED_DIR=~
+  if [ -f "${SAVE_FILE}" ]; then MCD_SAVED_DIR=$(cat /tmp/mcd-pwd); fi
   if [ "${1}" = '-' ]; then cd $MCD_PREV_DIR; return 0; fi
   if [ "${1}" = '--' ]; then cd $MCD_SAVED_DIR; return 0; fi
-  if [ "${1}" = '---' ]; then cd $MCD_SHARED_DIR; return 0; fi
-  if [ "${1}" = 'save' ]; then MCD_SAVED_DIR=$(pwd); return 0; fi
-  if [ "${1}" = 'share' ]; then pwd > $SHARE_FILE; return 0; fi
+  if [ "${1}" = 'save' ]; then pwd > $SAVE_FILE; return 0; fi
   # you need to have an mc menu file
-  FN=~/.config/mc/hotlist
+  local FN=~/.config/mc/hotlist
   if [ ! -f "${FN}" ]; then echo -e "${RED}mc hotlist file missing${NOCOLOR}"; return 1; fi
   # help: list the mc directory hotlist
   if [ -z "${1}" ]; then
     grep ENTRY ${FN} | sed s'/\s*ENTRY "//' | sed "s/\" URL \"/ ${ESC}[1;30m=> /" | sed "s/\"$/${ESC}[0m/"
-    echo -e "${DARKGRAY}saved: ${MCD_SAVED_DIR}\nshared: ${MCD_SHARED_DIR}\nprev: ${MCD_PREV_DIR}${NOCOLOR}" | sed "s/\/home\/$(whoami)/~/g"
+    echo -e "${DARKGRAY}saved: ${MCD_SAVED_DIR}\nprev: ${MCD_PREV_DIR}${NOCOLOR}" | sed "s/\/home\/$(whoami)/~/g"
     return 0
   fi
   # first try to grep it with `"X "` in the mc hotlist (useful for prefixed lists), then go for a looser grep
-  TARGET=$(grep ENTRY ${FN} | grep "\"${1} " | head -1 | sed 's/.*URL "//' | sed 's/"$//')
+  local TARGET=$(grep ENTRY ${FN} | grep "\"${1} " | head -1 | sed 's/.*URL "//' | sed 's/"$//')
   if [ $(echo $TARGET | wc -c) -gt 1 ]; then MCD_PREV_DIR=$(pwd); cd $TARGET; return 0; fi
   # since "X nnn" was not found (for example `2` with `1 foobar`), let's try "N xxx" (in the `foobar`)
   TARGET=$(grep ENTRY ${FN} | sed 's/\s*ENTRY "[0-9A-Z]*\s//' | grep "^${1}" | head -1 |sed 's/.*URL "//' | sed 's/"$//')
@@ -45,15 +42,23 @@ function mcd() {
   cd $1
 }
 function _mcd() {
-  local cur
-  cur=${COMP_WORDS[COMP_CWORD]}
-  FN=~/.config/mc/hotlist
+  local cur=${COMP_WORDS[COMP_CWORD]}
+  local FN=~/.config/mc/hotlist
   if [ ! -f "${FN}" ]; then return 1; fi
-  WORDS=$(grep ENTRY ${FN} | sed 's/\s*ENTRY "[0-9A-Z]*\s//' | sed 's/[" ].*//' | tr '\n' ' ')
-  COMPREPLY=($(compgen -W "save share ${WORDS}" -- ${cur}))
+  local WORDS=$(grep ENTRY ${FN} | sed 's/\s*ENTRY "[0-9A-Z]*\s//' | sed 's/[" ].*//' | tr '\n' ' ')
+  local COMPREPLY=($(compgen -W "save ${WORDS}" -- ${cur}))
   return 0
 }
 complete -F _mcd mcd
+# fzf + cd = fcd DEPTH (always quote, in case we have spaces in the name)
+function fcd() {
+  cd "$(find . -maxdepth ${1:-1} -path "*/node_modules" -prune -o -type d -print | fzf | xargs echo)"
+}
+# fzf + history + pbcopy = fhistory (and let's leave ctrl+r as is)
+function fhistory() {
+  local VAL=$(history | head -n -1 | tac | cut -c 8- | fzf)
+  if [ ! -z "${VAL}" ]; then printf "${VAL}" | xclip -i -sel p -f | xclip -i -sel c; fi
+}
 
 # much short, very magic
 alias g="git"
@@ -62,9 +67,22 @@ if [ "$PLATFORM" = "mingw" ]; then alias y="node /c/Users/szabi/scoop/apps/yarn/
 alias d="docker"
 if [ "$PLATFORM" = "mingw" ]; then alias d='winpty docker'; fi
 function p() {
+  # (le) list errored, (lg) list grep, (ra) reset all, (da) delete all, (?/f) fuzzy operation
   if [ "${1}" = 'le' ]; then pm2 l | grep -v '│ 0    │'; return 0; fi
   if [ "${1}" = 'lg' ]; then pm2 l | grep --color=never -Ei "${2}| id  |────────────" | grep -iz ${2}; return 0; fi
   if [ "${1}" = 'ra' ]; then pm2 reset all; return 0; fi
+  if [ "${1}" = 'da' ]; then pm2 delete all; return 0; fi
+  local FUZZ=0
+  if [ -z "${2}" ]; then
+    if [ "${1}" = 'start' ] || [ "${1}" = 'stop' ] || [ "${1}" = 'delete' ] || [ "${1}" = 'restart' ]; then FUZZ=1; fi;
+  fi
+  if [ "${2}" = '?' ] || [ "${2}" = 'f' ] || [ "${FUZZ}" -eq 1 ]; then
+    local IDS=$(pm2 list | grep -v WARN | fzf --exact --reverse --multi | sed 's/ //g' | sed 's/│/|/g' | cut -d '|' -f2 | xargs echo)
+    if [ -z "${IDS}" ]; then return 0; fi
+    echo -e "${CYAN}targets:${NOCOLOR} ${IDS} ${CYAN}operation:${NOCOLOR} ${1}"
+    pm2 ${1} ${IDS}
+    return 0
+  fi
   pm2 $@
 }
 
@@ -88,6 +106,7 @@ alias nP='nvm-project'
 
 # change to node version specified by project
 function nvm-project() {
+  local NVER
   if [ -f ".nvmrc" ]; then
     NVER=$(cat .nvmrc)
     echo -e "${GREEN}nvmrc found, using v${NVER}${NOCOLOR}"
@@ -108,7 +127,7 @@ function nvm-project() {
 function current_node() {
   # NVER=$(readlink ~/.nvm/current | grep -o "node\/v.*" | sed "s/node\/v//")
   if [[ $(command -v node | wc -l) -eq 1 ]]; then
-    NVER=$(node -v)
+    local NVER=$(node -v)
     echo -e " ${CYAN}N:${NVER}${NOCOLOR}"
   fi
 }
