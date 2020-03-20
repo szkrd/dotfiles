@@ -10,6 +10,7 @@ alias realias="unalias -a && rebash"
 alias xx="exit"
 
 # mc and cd trickery (mcd tries to match the param from the mc hotlist and then chdir there)
+# (adding "f" as the second param will just do an `&& fcd 1`, because lazyness)
 function mdcd () { mkdir -p "$@" && cd "$@"; }
 alias md="mdcd"
 alias mc=". /usr/lib/mc/mc-wrapper.sh"
@@ -17,12 +18,14 @@ alias cd..="cd .."
 alias cd....="cd ../.."
 MCD_PREV_DIR=~
 function mcd() {
+  local AFTER="${2}"
+  function _cd() { cd $1; if [ "${AFTER}" = 'f' ] || [ "${AFTER}" = 'fcd' ]; then fcd 1; fi; }
   local ESC=$(printf '\033')
   local SAVE_FILE=/tmp/mcd-pwd
   local MCD_SAVED_DIR=~
   if [ -f "${SAVE_FILE}" ]; then MCD_SAVED_DIR=$(cat /tmp/mcd-pwd); fi
-  if [ "${1}" = '-' ]; then cd $MCD_PREV_DIR; return 0; fi
-  if [ "${1}" = '--' ]; then cd $MCD_SAVED_DIR; return 0; fi
+  if [ "${1}" = '-' ]; then _cd $MCD_PREV_DIR; return 0; fi
+  if [ "${1}" = '--' ]; then _cd $MCD_SAVED_DIR; return 0; fi
   if [ "${1}" = 'save' ]; then pwd > $SAVE_FILE; return 0; fi
   # you need to have an mc menu file
   local FN=~/.config/mc/hotlist
@@ -35,18 +38,18 @@ function mcd() {
   fi
   # first try to grep it with `"X "` in the mc hotlist (useful for prefixed lists), then go for a looser grep
   local TARGET=$(grep ENTRY ${FN} | grep "\"${1} " | head -1 | sed 's/.*URL "//' | sed 's/"$//')
-  if [ $(echo $TARGET | wc -c) -gt 1 ]; then MCD_PREV_DIR=$(pwd); cd $TARGET; return 0; fi
+  if [ $(echo $TARGET | wc -c) -gt 1 ]; then MCD_PREV_DIR=$(pwd); _cd $TARGET; return 0; fi
   # since "X nnn" was not found (for example `2` with `1 foobar`), let's try "N xxx" (in the `foobar`)
   TARGET=$(grep ENTRY ${FN} | sed 's/\s*ENTRY "[0-9A-Z]*\s//' | grep "^${1}" | head -1 |sed 's/.*URL "//' | sed 's/"$//')
-  if [ $(echo $TARGET | wc -c) -gt 1 ]; then MCD_PREV_DIR=$(pwd); cd $TARGET; return 0; fi
-  cd $1
+  if [ $(echo $TARGET | wc -c) -gt 1 ]; then MCD_PREV_DIR=$(pwd); _cd $TARGET; return 0; fi
+  _cd $1
 }
 function _mcd() {
   local cur=${COMP_WORDS[COMP_CWORD]}
   local FN=~/.config/mc/hotlist
   if [ ! -f "${FN}" ]; then return 1; fi
   local WORDS=$(grep ENTRY ${FN} | sed 's/\s*ENTRY "[0-9A-Z]*\s//' | sed 's/[" ].*//' | tr '\n' ' ')
-  local COMPREPLY=($(compgen -W "save ${WORDS}" -- ${cur}))
+  COMPREPLY=($(compgen -W "save ${WORDS}" -- ${cur}))
   return 0
 }
 complete -F _mcd mcd
@@ -177,13 +180,26 @@ function is_mc() {
   fi
 }
 
-# misc
+# suspend (TODO swapon swapoff sda2 or similar?)
+# (do setup /etc/uswsusp.conf + kernel params -> then update initramfs and grub)
+function s2() {
+  case $1 in r*) sudo s2ram && slock; return 0; esac
+  case $1 in b*) sudo s2both && slock; return 0; esac
+  case $1 in d*) sudo s2disk && slock; return 0; esac
+  echo -e "${CYAN}b${NOCOLOR}=both, ${CYAN}r${NOCOLOR}=ram, ${CYAN}d${NOCOLOR}=disk"
+}
+
+# setting titles (terminal / tmux / msys)
 function title() { echo -ne "\033]0;${1}\007"; }
 alias t="title"
 alias tt="tmux rename-window"
 function titleprefix() { TITLEPREFIX="$1"; }
 alias tp="titleprefix"
+
+# misc
 function jpg2mp4 () { ffmpeg -loop 1 -i "$1" -c:v libx264 -t 15 -pix_fmt yuv420p "$1.mp4"; }
+alias ytdl="youtube-dl"
+alias ytdlmp3="youtube-dl -x --audio-format mp3"
 
 # my file and mpd server, an ancient netbook
 # for mingw use git sdk shell and `pacman -S expect`
