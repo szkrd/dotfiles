@@ -70,11 +70,17 @@ if [ "$PLATFORM" = "mingw" ]; then alias y="node /c/Users/szabi/scoop/apps/yarn/
 alias d="docker"
 if [ "$PLATFORM" = "mingw" ]; then alias d='winpty docker'; fi
 function p() {
-  # (le) list errored, (lg) list grep, (ra) reset all, (da) delete all, (?/f) fuzzy operation
+  # (le) list errored, (lg) list grep, (ra) reset all, (da) delete all, (?/f) fuzzy operation, (n) number
   if [ "${1}" = 'le' ]; then pm2 l | grep -v '│ 0    │'; return 0; fi
   if [ "${1}" = 'lg' ]; then pm2 l | grep --color=never -Ei "${2}| id  |────────────" | grep -iz ${2}; return 0; fi
   if [ "${1}" = 'ra' ]; then pm2 reset all; return 0; fi
   if [ "${1}" = 'da' ]; then pm2 delete all; return 0; fi
+  if [ "${1}" = 'n' ]; then
+    local LINES="$(pm2 list | grep "${2}" | cut -c -78 | sed 's/│//g' | sed 's/default.*//g' | awk '{$1=$1};1' | sed 's/\s/ = /')"
+    if [ "$(wc -l <<< $LINES)" -gt 1 ]; then echo "${LINES}"; fi
+    pm2 list | grep "${2}" | cut -c -11 | sed 's/[^0-9]*//g' | xargs | sed -e 's/ /,/g'
+    return 0
+  fi
   local FUZZ=0
   if [ -z "${2}" ]; then
     if [ "${1}" = 'start' ] || [ "${1}" = 'stop' ] || [ "${1}" = 'delete' ] || [ "${1}" = 'restart' ]; then FUZZ=1; fi;
@@ -180,21 +186,19 @@ function is_mc() {
   fi
 }
 
-# suspend (TODO swapon swapoff sda2 or similar?)
-# (do setup /etc/uswsusp.conf + kernel params -> then update initramfs and grub)
-function s2() {
-  case $1 in r*) sudo s2ram && slock; return 0; esac
-  case $1 in b*) sudo s2both && slock; return 0; esac
-  case $1 in d*) sudo s2disk && slock; return 0; esac
-  echo -e "${CYAN}b${NOCOLOR}=both, ${CYAN}r${NOCOLOR}=ram, ${CYAN}d${NOCOLOR}=disk"
-}
-
-# setting titles (terminal / tmux / msys)
+# setting titles (terminal / tmux / msys), controlling tmux
 function title() { echo -ne "\033]0;${1}\007"; }
 alias t="title"
 alias tt="tmux rename-window"
 function titleprefix() { TITLEPREFIX="$1"; }
 alias tp="titleprefix"
+function tmux-split-run() { tmux split-window -dh -t $TMUX_PANE "bash --rcfile <(echo '. ~/.bashrc;$*')"; }
+alias tsr="tmux-split-run"
+function tmux-split-run1() {
+  if [ "$(tmux list-panes | wc -l | cut -d' ' -f1)" -gt 1 ]; then tmux kill-pane -t 2; fi
+  tsr "$@"
+}
+alias tsr1="tmux-split-run1"
 
 # misc
 function jpg2mp4 () { ffmpeg -loop 1 -i "$1" -c:v libx264 -t 15 -pix_fmt yuv420p "$1.mp4"; }
@@ -218,4 +222,20 @@ function vacak_shell() {
     expect "assword:"; send "$::env(VACAK_PASSWORD)\r"
     interact
   '
+}
+
+# TESTBED / PJOT ZONE
+# ===================
+
+# only s2ram works reliably
+alias s2ram="sudo s2ram && slock"
+alias s2r="s2ram"
+# name this the tmux pane as services, launch mongo left, rabbit right
+alias rabbimongo="tt services; mongo40 & tsr1 rabbit"
+# rename tmux pane to param or currend dirname, append pm2 id if possible
+function ttp() {
+  local NAME="$(basename $(pwd))"
+  if [ ! -z "${1}" ]; then NAME="${1}"; fi
+  local NUM="$(p n $NAME)"
+  if [ "$(wc -c <<< $NUM)" -gt 1 ]; then tt "${NAME}.${NUM}"; else tt "${NAME}"; fi
 }
