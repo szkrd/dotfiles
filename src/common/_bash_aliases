@@ -237,5 +237,9 @@ function ttp() {
   local NAME="$(basename $(pwd))"
   if [ ! -z "${1}" ]; then NAME="${1}"; fi
   local NUM="$(p n $NAME)"
-  if [ "$(wc -c <<< $NUM)" -gt 1 ]; then tt "${NAME}.${NUM}"; else tt "${NAME}"; fi
+  if [ "$(wc -c <<< $NUM)" -gt 1 ] && [ "$(wc -l <<< $NUM)" -eq 1 ]; then
+    tt "${NAME}.${NUM}"
+  else
+    tt "${NAME}"
+  fi
 }
