@@ -9,9 +9,18 @@ alias rebash="[[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile"
 alias realias="unalias -a && rebash"
 alias xx="exit"
 
+# a slightly better rename - one argument will trigger readline for second
+# (see also imv from renameutils or bash Ctrl-W Ctrl-Y Ctrl-Y for single words)
+function mv() {
+  if [ "$#" -eq 1 ] && ( [ -f "$1" ] || [ -d "$1" ] ); then
+    read -ei "$1" newfilename; command mv -v "${1}" "${newfilename}"; return $?
+  fi
+  command mv "$@"; return $?
+}
+
 # mc and cd trickery (mcd tries to match the param from the mc hotlist and then chdir there)
 # (adding "f" as the second param will just do an `&& fcd 1`, because lazyness)
-function mdcd () { mkdir -p "$@" && cd "$@"; }
+function mdcd() { mkdir -p "$@" && cd "$@"; }
 alias md="mdcd"
 alias mc=". /usr/lib/mc/mc-wrapper.sh"
 alias cd..="cd .."
@@ -201,7 +210,7 @@ function tmux-split-run1() {
 alias tsr1="tmux-split-run1"
 
 # misc
-function jpg2mp4 () { ffmpeg -loop 1 -i "$1" -c:v libx264 -t 15 -pix_fmt yuv420p "$1.mp4"; }
+function jpg2mp4() { ffmpeg -loop 1 -i "$1" -c:v libx264 -t 15 -pix_fmt yuv420p "$1.mp4"; }
 alias ytdl="youtube-dl"
 alias ytdlmp3="youtube-dl -x --audio-format mp3"
 
@@ -232,7 +241,7 @@ alias s2ram="sudo s2ram && slock"
 alias s2r="s2ram"
 # name this the tmux pane as services, launch mongo left, rabbit right
 alias rabbimongo="tt services; mongo40 & tsr1 rabbit"
-# rename tmux pane to param or currend dirname, append pm2 id if possible
+# rename tmux pane to param or current dirname, append pm2 id if possible
 function ttp() {
   local NAME="$(basename $(pwd))"
   if [ ! -z "${1}" ]; then NAME="${1}"; fi
