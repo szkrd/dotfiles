@@ -12,7 +12,7 @@ alias xx="exit"
 # a slightly better rename - one argument will trigger readline for second
 # (see also imv from renameutils or bash Ctrl-W Ctrl-Y Ctrl-Y for single words)
 function mv() {
-  if [ "$#" -eq 1 ] && ( [ -f "$1" ] || [ -d "$1" ] ); then
+  if [ "$#" -eq 1 ] && [ -e "$1" ]; then
     read -ei "$1" newfilename; command mv -v "${1}" "${newfilename}"; return $?
   fi
   command mv "$@"; return $?
