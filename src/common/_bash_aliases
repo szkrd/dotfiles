@@ -9,6 +9,11 @@ alias rebash="[[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile"
 alias realias="unalias -a && rebash"
 alias xx="exit"
 
+# =========================
+# MV, CD, MC, MCD, FCD...
+# =========================
+# file and history utils
+
 # a slightly better rename - one argument will trigger readline for second
 # (see also imv from renameutils or bash Ctrl-W Ctrl-Y Ctrl-Y for single words)
 function mv() {
@@ -72,12 +77,17 @@ function fhistory() {
   if [ ! -z "${VAL}" ]; then printf "${VAL}" | xclip -i -sel p -f | xclip -i -sel c; fi
 }
 
+# =========================
+# GIT, YARN, DOCKER, PM2
+# =========================
+
 # much short, very magic
 alias g="git"
 alias y="yarn"
 if [ "$PLATFORM" = "mingw" ]; then alias y="node /c/Users/szabi/scoop/apps/yarn/current/Yarn/lib/cli.js"; fi
 alias d="docker"
 if [ "$PLATFORM" = "mingw" ]; then alias d='winpty docker'; fi
+# pm2 wrapper with fzf and shortened commands
 function p() {
   # (le) list errored, (lg) list grep, (ra) reset all, (da) delete all, (?/f) fuzzy operation, (n) number
   if [ "${1}" = 'le' ]; then pm2 l | grep -v '│ 0    │'; return 0; fi
@@ -92,6 +102,7 @@ function p() {
   fi
   local FUZZ=0
   if [ -z "${2}" ]; then
+    # these commands without a second param will trigger fuzzy matching
     if [ "${1}" = 'start' ] || [ "${1}" = 'stop' ] || [ "${1}" = 'delete' ] || [ "${1}" = 'restart' ]; then FUZZ=1; fi;
   fi
   if [ "${2}" = '?' ] || [ "${2}" = 'f' ] || [ "${FUZZ}" -eq 1 ]; then
@@ -103,6 +114,10 @@ function p() {
   fi
   pm2 $@
 }
+
+# =========================
+# NODE, YARN, NVM
+# =========================
 
 # npm, nvm and yarn
 alias nuke="rm -rf ./node_modules && npm cache clear --force && npm install --no-shrinkwrap --update-binary"
@@ -150,7 +165,12 @@ function current_node() {
   fi
 }
 
-# editors and copy-paste (pri and sec)
+# =========================
+# EDITORS & COPY-PASTE
+# =========================
+# nano/na, geany, vscode, pbcopy, pbpaste,
+# copy-cat, copy-path, copy-fn
+
 alias nano='nano -x -w -z -H'
 alias na='nano'
 alias geany='geany'
@@ -165,7 +185,10 @@ function copy-cat() { cat $@ | pbcopy; }
 function copy-path() { readlink -f ${@:-.}; readlink -f ${@:-.} | head -c -1 | pbcopy; }
 alias copy-fn='copy-path'
 
-# edit popular files
+# =========================
+# EDIT DOTFILES
+# =========================
+
 alias ed-bp="${EDITOR} ~/.bash_profile"
 alias ed-brc="${EDITOR} ~/.bashrc"
 alias ed-ba="${EDITOR} ~/.bash_aliases"
@@ -173,6 +196,10 @@ alias ed-bs="${EDITOR} ~/.bash_secret"
 alias ed-gc="${EDITOR} ~/.gitconfig"
 alias ed-gi="${EDITOR} ~/.gitignore"
 alias ed-mchot="${EDITOR} ~/.config/mc/hotlist"
+
+# =========================
+# PROMPT HELPERS
+# =========================
 
 # git prompt
 function markup_git_branch() {
@@ -195,7 +222,12 @@ function is_mc() {
   fi
 }
 
+# =========================
+# NAMING THINGS
+# =========================
 # setting titles (terminal / tmux / msys), controlling tmux
+# t/title, tt, titleprefix/tp, tsr, tsr1, ttp
+
 function title() { echo -ne "\033]0;${1}\007"; }
 alias t="title"
 alias tt="tmux rename-window"
@@ -208,13 +240,32 @@ function tmux-split-run1() {
   tsr "$@"
 }
 alias tsr1="tmux-split-run1"
+# rename tmux pane to param or currend dirname, append pm2 id if possible
+function ttp() {
+  local NAME="$(basename $(pwd))"
+  if [ ! -z "${1}" ]; then NAME="${1}"; fi
+  local NUM="$(p n $NAME)"
+  if [ "$(wc -c <<< $NUM)" -gt 1 ] && [ "$(wc -l <<< $NUM)" -eq 1 ]; then
+    tt "${NAME}.${NUM}"
+  else
+    tt "${NAME}"
+  fi
+}
 
-# misc
+# =========================
+# MULTIMEDIA, CONVERSION
+# =========================
+# jpg2mp4, ytdl, ytdlmp3
+
 function jpg2mp4() { ffmpeg -loop 1 -i "$1" -c:v libx264 -t 15 -pix_fmt yuv420p "$1.mp4"; }
 alias ytdl="youtube-dl"
 alias ytdlmp3="youtube-dl -x --audio-format mp3"
 
-# my file and mpd server, an ancient netbook
+# =========================
+# VACAK
+# =========================
+# an ancient asus eee pc <3
+
 # for mingw use git sdk shell and `pacman -S expect`
 function vacak_mpd() {
   NCMPCPP=1 expect -c '
@@ -232,23 +283,28 @@ function vacak_shell() {
     interact
   '
 }
+function ncmp() {
+  if [ $(command -v ncmpcpp | wc -l) -ne 1 ]; then echo "no ncmpcpp?"; return 1; fi
+  local H="--host ${VACAK_IP}"
+  if [ "${1}" = '?' ]; then ncmpcpp $H --current-song; echo -e "\n"; return 0; fi
+  ncmpcpp $H "$@"
+}
+alias ncmp-current-song="ncmp ?"
 
-# TESTBED / PJOT ZONE
-# ===================
+# =========================
+# SYSTEM
+# =========================
+# s2ram/s2r, xx, df-real
 
 # only s2ram works reliably
 alias s2ram="sudo s2ram && slock"
 alias s2r="s2ram"
+# df without the snap packages and volatile file systems
+alias df-real="df --local --human-readable | grep -v '^/dev/loop\|^tmpfs\|^udev'"
+
+# =========================
+# TESTBED / PJOT ZONE
+# =========================
+
 # name this the tmux pane as services, launch mongo left, rabbit right
 alias rabbimongo="tt services; mongo40 & tsr1 rabbit"
-# rename tmux pane to param or current dirname, append pm2 id if possible
-function ttp() {
-  local NAME="$(basename $(pwd))"
-  if [ ! -z "${1}" ]; then NAME="${1}"; fi
-  local NUM="$(p n $NAME)"
-  if [ "$(wc -c <<< $NUM)" -gt 1 ] && [ "$(wc -l <<< $NUM)" -eq 1 ]; then
-    tt "${NAME}.${NUM}"
-  else
-    tt "${NAME}"
-  fi
-}
