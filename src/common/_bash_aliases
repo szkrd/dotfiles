@@ -8,6 +8,7 @@ alias cls='clear && echo -e "\ec"'
 alias rebash="[[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile"
 alias realias="unalias -a && rebash"
 alias xx="exit"
+alias nocolor="sed 's/\x1b\[[0-9;]*m//g'"
 
 # =========================
 # MV, CD, MC, MCD, FCD...
@@ -241,6 +242,7 @@ function tmux-split-run1() {
 }
 alias tsr1="tmux-split-run1"
 # rename tmux pane to param or currend dirname, append pm2 id if possible
+# TODO: non fuzzy match with "name:" first?
 function ttp() {
   local NAME="$(basename $(pwd))"
   if [ ! -z "${1}" ]; then NAME="${1}"; fi
