@@ -302,6 +302,7 @@ alias ncmp-current-song="ncmp ?"
 alias s2ram="sudo s2ram && slock"
 alias s2r="s2ram"
 # df without the snap packages and volatile file systems
+alias df="df -h -x squashfs"
 alias df-real="df --local --human-readable | grep -v '^/dev/loop\|^tmpfs\|^udev'"
 
 # =========================
