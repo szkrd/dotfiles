@@ -122,7 +122,6 @@ function p() {
 
 # npm, nvm and yarn
 alias nuke="rm -rf ./node_modules && npm cache clear --force && npm install --no-shrinkwrap --update-binary"
-alias npmr='npm run'
 alias npmrd='npm run dev'
 alias npmt='npm test'
 alias npmrt='npm test'
@@ -137,6 +136,16 @@ alias ys='y start'
 alias yc='y clean'
 alias yex='y start:exposed'
 alias nP='nvm-project'
+
+# npm run without parameters will trigger fzf with the list of scripts' section keys
+# (`npm run` wo params will list runnable scripts of course)
+# (another way to do smg similar would be using jq, like `jq ".scripts" package.json`)
+function npmr() {
+  if [ ! -f "package.json" ]; then echo "no package.json"; return 1; fi
+  if [ ! -z "${1}" ]; then command npm run "$@"; return $?; fi
+  local VAL=$(node -e "x=require('./package.json');console.log(Object.keys(x.scripts||{}).sort().join('\n'))" | fzf)
+  if [ ! -z "$VAL" ]; then npm run $VAL; return $?; fi
+}
 
 # change to node version specified by project
 function nvm-project() {
@@ -242,7 +251,6 @@ function tmux-split-run1() {
 }
 alias tsr1="tmux-split-run1"
 # rename tmux pane to param or currend dirname, append pm2 id if possible
-# TODO: non fuzzy match with "name:" first?
 function ttp() {
   local NAME="$(basename $(pwd))"
   if [ ! -z "${1}" ]; then NAME="${1}"; fi
