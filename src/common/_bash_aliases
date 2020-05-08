@@ -55,7 +55,7 @@ function mcd() {
   local TARGET=$(grep ENTRY ${FN} | grep "\"${1} " | head -1 | sed 's/.*URL "//' | sed 's/"$//')
   if [ $(echo $TARGET | wc -c) -gt 1 ]; then MCD_PREV_DIR=$(pwd); __cd $TARGET; return 0; fi
   # since "X nnn" was not found (for example `2` with `1 foobar`), let's try "N xxx" (in the `foobar`)
-  TARGET=$(grep ENTRY ${FN} | sed 's/\s*ENTRY "[0-9A-Z]*\s//' | grep "^${1}" | head -1 |sed 's/.*URL "//' | sed 's/"$//')
+  TARGET=$(grep ENTRY ${FN} | sed 's/\s*ENTRY "[0-9A-Z-]*\s//' | grep "^${1}" | head -1 |sed 's/.*URL "//' | sed 's/"$//')
   if [ $(echo $TARGET | wc -c) -gt 1 ]; then MCD_PREV_DIR=$(pwd); __cd $TARGET; return 0; fi
   __cd $1
 }
@@ -63,7 +63,7 @@ function _mcd() {
   local cur=${COMP_WORDS[COMP_CWORD]}
   local FN=~/.config/mc/hotlist
   if [ ! -f "${FN}" ]; then return 1; fi
-  local WORDS=$(grep ENTRY ${FN} | sed 's/\s*ENTRY "[0-9A-Z]*\s//' | sed 's/[" ].*//' | tr '\n' ' ')
+  local WORDS=$(grep ENTRY ${FN} | sed 's/\s*ENTRY "[0-9A-Z-]*\s//' | sed 's/[" ].*//' | tr '\n' ' ')
   COMPREPLY=($(compgen -W "save ${WORDS}" -- ${cur}))
   return 0
 }
@@ -138,13 +138,16 @@ alias yex='y start:exposed'
 alias nP='nvm-project'
 
 # npm run without parameters will trigger fzf with the list of scripts' section keys
-# (`npm run` wo params will list runnable scripts of course)
-# (another way to do smg similar would be using jq, like `jq ".scripts" package.json`)
+# (`npm run` wo params will list runnable scripts of course, but that's too verbose)
+# (another way to do smg similar would be with using jq, like `jq ".scripts" package.json`)
+# (here fzf uses multi with xargs (one line at a time), which is simple, since script names got no spaces,
+# but I want it to stop at the first error, that's why I need the shell exec and the special exit code)
 function npmr() {
   if [ ! -f "package.json" ]; then echo "no package.json"; return 1; fi
   if [ ! -z "${1}" ]; then command npm run "$@"; return $?; fi
-  local VAL=$(node -e "x=require('./package.json');console.log(Object.keys(x.scripts||{}).sort().join('\n'))" | fzf)
-  if [ ! -z "$VAL" ]; then npm run $VAL; return $?; fi
+  local JS="x=require('./package.json');console.log(Object.keys(x.scripts||{}).sort().join('\n'))"
+  local VAL=$(node -e "${JS}" | fzf --tac --multi --cycle)
+  if [ ! -z "$VAL" ]; then echo -e "${VAL}" | xargs -n1 sh -c 'npm run $0 || exit 255'; fi
 }
 
 # change to node version specified by project
