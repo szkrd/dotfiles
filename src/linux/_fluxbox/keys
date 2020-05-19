@@ -112,12 +112,13 @@ Control Mod4 S  :MacroCmd {SetResourceValue session.screen0.toolbar.visible true
 
 ## application launchers
 Mod4 F :Exec nautilus
+Mod4 J :Exec ~/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox
 Mod4 D :ToggleCmd {ShowDesktop}
 Mod1 Mod4 D :Exec nautilus ~/Downloads
 Mod1 Mod4 R :Exec grun
 Mod4 R :Exec fbrun -bg black -fg gray
-Mod4 T :Exec GTK_THEME=Adwaita-dark gnome-terminal
-Mod1 Mod4 T :Exec GTK_THEME=Adwaita-dark gnome-terminal --geometry +0-0
+Mod4 T :Exec sakura
+Mod1 Mod4 T :Exec sakura --geometry +0-0
 Mod4 C :Exec sakura -r 30 -c 120 -t MC -e mc
 Control Shift Escape :Exec sakura -s -t TOP -e htop
 Mod4 P :Exec lxrandr
@@ -127,6 +128,7 @@ Mod1 Mod4 L :Exec sleep 1 && xset dpms force standby
 Mod4 M :Exec pactl set-sink-mute 0 1
 Mod1 Mod4 M :Exec pactl set-sink-mute 0 0
 None Print :Exec gnome-screenshot -f ~/Pictures/Screenshots/$(date +'%Y%m%d_%H%M%S').png
+Control Print :Exec maim -s > ~/Pictures/Screenshots/$(date +'%Y%m%d_%H%M%S')-clip.png
 Control Shift Print :Exec maim -s | xclip -selection clipboard -t image/png
 Mod4 Print :Exec env -u SESSION_MANAGER ksnip -r
 Mod4 F12 :Exec xterm -geometry 80x10+0+32 -T record-video -hold -e ~/bin/record-screen.sh
@@ -156,3 +158,7 @@ MoveMode: None X            :MoveTo 0 0 Bottom Center
 MoveMode: None Z            :MoveTo 0 0 BottomLeft
 MoveMode: None A            :MoveTo 0 0 Left Center
 MoveMode: None S            :MoveTo 0 0 Center
+
+# fluxbox non-keyboard events
+# change bgcolor according to perl array (based on current desktop id)
+ChangeWorkspace :Exec fbsetroot -solid "#$(xprop -root _NET_CURRENT_DESKTOP|grep -Eo '[0-9]'|perl -e '@c=("333","030","033","330","303");print $c[<>];')"
