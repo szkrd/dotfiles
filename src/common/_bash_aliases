@@ -1,14 +1,38 @@
-alias grep='grep --color=auto'
-alias egrep='egrep --color=auto'
-if [ "$PLATFORM" = "mingw" ] || [ "$PLATFORM" = "linux" ]; then alias ls='ls --color=auto'; fi
-alias ll='ls -la'
-alias la='ls -A'
-alias l='ls -CF'
 alias cls='clear && echo -e "\ec"'
 alias rebash="[[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile"
 alias realias="unalias -a && rebash"
 alias xx="exit"
+
+# =========================
+# LS AND COLORS
+# =========================
+
+if [ "$PLATFORM" = "mingw" ] || [ "$PLATFORM" = "linux" ]; then alias ls='ls --color=auto'; fi
+alias la='ls -A'
+alias l='ls -CF'
+
+# instead of `alias ll='ls -la'` we add some extra colors
+# and show dirs first (that's why we need to ls calls)
+# (`ll -v` may be useful, since that sort order places dotfiles first)
+function ll() {
+  ls --color=always -la "$@"| grep '^d' | hilite DARKGRAY '^[@drwx+\-]*'
+  LS_COLORS="${LS_COLORS}:fi=35:" ls --color=always -la "$@"| grep -v '^d' | sed '/^total/d' | hilite DARKGRAY '^[@drwx+\-]*'
+}
+
 alias nocolor="sed 's/\x1b\[[0-9;]*m//g'"
+alias grep='grep --color=auto'
+
+# colored grep
+# usage: `cgrep RED Foobar` the color is from the list in my bashrc
+# (all of them should work lower or uppercase, except NOCOLOR of course)
+function cgrep() {
+  local UP=$(echo $1 | tr a-z A-Z | sed 's/[^A-Z]//g')
+  local COLOR=$(eval "echo \$$UP" | sed 's/[^0-9;]//g')
+  GREP_COLORS="ms=${COLOR}" egrep --color=always "${@:2}"
+}
+
+# print all matches and hilight the grepped text
+function hilite() { cgrep $1 -e '^' -e "${@:2}"; }
 
 # =========================
 # MV, CD, MC, MCD, FCD...
@@ -136,6 +160,9 @@ alias ys='y start'
 alias yc='y clean'
 alias yex='y start:exposed'
 alias nP='nvm-project'
+alias n8='nvm use 8'
+alias n10='nvm use 10'
+alias n12='nvm use 12'
 
 # npm run without parameters will trigger fzf with the list of scripts' section keys
 # (`npm run` wo params will list runnable scripts of course, but that's too verbose)
@@ -171,11 +198,23 @@ function nvm-project() {
 
 # print the current nvm node version in the prompt
 function current_node() {
-  # NVER=$(readlink ~/.nvm/current | grep -o "node\/v.*" | sed "s/node\/v//")
   if [[ $(command -v node | wc -l) -eq 1 ]]; then
     local NVER=$(node -v)
     echo -e " ${CYAN}N:${NVER}${NOCOLOR}"
   fi
+}
+
+# on certain path prefixes show a warning in the prompt if the node version is not okay
+# (unlike `current_node` this one assumes nvm (NV) and will bail out if there's no version string in the path)
+function check_node_version() {
+  local NV=$(which node | egrep -o '/v[0-9]+\.' | sed 's/[^0-9]//g')
+  if [ -z "${NV}" ]; then return; fi;
+  local P=$(pwd | sed "s|^$HOME|~|")
+  local VREQ='any'
+  # trx microservices are still on v8, plano prefers v10 and above
+  if [ $(echo $P|grep -c '^~/Projects/trax') -gt 0 ] && [ "${NV}" -ne 8 ]; then VREQ='!= 8'; fi
+  if [ $(echo $P|grep -c '^~/Projects/planorama') -gt 0 ] && [ "${NV}" -lt 10 ]; then VREQ='< 10'; fi
+  if [ "${VREQ}" != 'any' ]; then echo -e "${LIGHTRED} ${VREQ}${NOCOLOR}"; fi
 }
 
 # =========================
@@ -313,7 +352,7 @@ alias ncmp-current-song="ncmp ?"
 alias s2ram="sudo s2ram && slock"
 alias s2r="s2ram"
 # df without the snap packages and volatile file systems
-alias df="df -h -x squashfs"
+alias df-h="df -h -x squashfs | hilite WHITE '[0-9]+%' | hilite DARKGRAY 'Filesystem.*'"
 alias df-real="df --local --human-readable | grep -v '^/dev/loop\|^tmpfs\|^udev'"
 
 # =========================

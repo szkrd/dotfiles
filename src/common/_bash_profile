@@ -123,7 +123,7 @@ export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 #PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] \[\e[0;37m\]'
 #PS1="\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]$(parse_git_branch)$(is_git_clean)\[\e[1;32m\]\n\$:\\>\[\e[m\]\[\e[0;37m\]"
 #PS1="\[\e[0;32m\]\u\[\e[m\] \$(current_node)\[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]\$(markup_git_branch \$(parse_git_branch))\[\e[1;32m\]\n\$ \[\e[m\]\[\e[0;37m\]"
-PS1="\[${GREEN}\]\u\$(is_mc)\$(current_node) \[${LIGHTBLUE}\]\w\$(markup_git_branch \$(parse_git_branch))\[${LIGHTGREEN}\]\n\$ \[${NOCOLOR}\]"
+PS1="\[${GREEN}\]\u\$(is_mc)\$(current_node)\$(check_node_version) \[${LIGHTBLUE}\]\w\$(markup_git_branch \$(parse_git_branch))\[${LIGHTGREEN}\]\n\$ \[${NOCOLOR}\]"
 
 PATH=$PATH:~/bin:~/.local/bin:~/bin/rabbitmq/sbin:~/Nextcloud/Work/bin:~/Projects/planorama/DevScripts/services
 if [ "$PLATFORM" = "mingw" ]; then PATH=$PATH:/c/git-sdk-64/usr/bin/; fi
