@@ -202,7 +202,8 @@ if [ -f "${BREWPREFIX}/bin/brew" ]; then
   export HOMEBREW_PREFIX="${BREWPREFIX}";
   export HOMEBREW_CELLAR="${BREWPREFIX}/Cellar";
   export HOMEBREW_REPOSITORY="${BREWPREFIX}/Homebrew";
-  export PATH="${BREWPREFIX}/bin:${BREWPREFIX}/sbin${PATH+:$PATH}";
+  # this had to be fixed, since it included itself twice
+  export PATH=$PATH:${BREWPREFIX}/bin:${BREWPREFIX}/sbin;
   export MANPATH="${BREWPREFIX}/share/man${MANPATH+:$MANPATH}:";
   export INFOPATH="${BREWPREFIX}/share/info${INFOPATH+:$INFOPATH}";
 fi
