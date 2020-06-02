@@ -8,4 +8,5 @@ export DISABLE_SINGLE_INSTANCE_TASKS="true"
 export NOT_FOUND_FALLBACK="http://foobarfiler-staging.XXXXX.XXX"
 
 # this will conflict with plano! (but I'm not using that very often)
-export AWS_DEFAULT_PROFILE="XXXX"
+export AWS_DEFAULT_REGION="us-east-1"
+export AWS_PROFILE="XXXX"
