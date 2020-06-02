@@ -30,6 +30,7 @@
     br = branch
     brkill = !sh -c 'git branch -D $1 | git push --no-verify origin :$1' -
     brkillall = !git branch | grep -E -v ' (development|master|sprint)$' | xargs git branch -d
+    st = stash --include-untracked
     stkill = stash clear
     rb = rebase
     rbi = rebase --interactive
@@ -41,8 +42,10 @@
     pop = stash pop
     s = status
     ss = status -s
+    menoff = merge --no-ff
     pu = push
     puf = push -f
+    puft = push --follow-tags
     puN = push --no-verify
     pufN = push -f --no-verify
     pom = push origin master

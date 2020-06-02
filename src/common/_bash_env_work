@@ -5,4 +5,7 @@ export CHAOS_CRASH_ENABLED="false"
 export DISABLE_SINGLE_INSTANCE_TASKS="true"
 
 # filer can fall back to an url prefix for 404 images
-export NOT_FOUND_FALLBACK=""
+export NOT_FOUND_FALLBACK="http://foobarfiler-staging.XXXXX.XXX"
+
+# this will conflict with plano! (but I'm not using that very often)
+export AWS_DEFAULT_PROFILE="XXXX"
