@@ -22,14 +22,14 @@
     cam = commit -am
     camam = commit --amend -am
     camN = commit --no-verify -am
-    branch-id = !git branch | grep '*' | grep -oE '[A-Za-z]{3}-[0-9]{1,4}' | head -1
+    branch-id = !git branch | grep '*' | grep -oE '[A-Za-z]{2,5}-[0-9]{1,4}' | head -1
     cambi = !sh -c 'git commit -am \""[$(git branch-id)] $*"\"' -
     whoops = commit --amend -all
     caa = !git add --all && git commit
     go = !git add --all && git commit && git push
     br = branch
     brkill = !sh -c 'git branch -D $1 | git push --no-verify origin :$1' -
-    brkillall = !git branch | grep -E -v ' (development|master|sprint)$' | xargs git branch -d
+    brkillall = !git branch | grep -E -v ' (development|dev|release|edge|master|sprint)$' | xargs git branch -d
     st = stash --include-untracked
     stkill = stash clear
     rb = rebase
