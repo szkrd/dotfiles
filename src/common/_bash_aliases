@@ -1,4 +1,4 @@
-alias cls='clear && echo -e "\ec"'
+alias cls='echo -e "\ec" && clear && printf %"$COLUMNS"s |tr " " "-"'
 alias rebash="[[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile"
 alias realias="unalias -a && rebash"
 alias xx="exit"
