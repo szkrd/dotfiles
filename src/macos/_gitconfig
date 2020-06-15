@@ -28,6 +28,8 @@
     caa = !git add --all && git commit
     go = !git add --all && git commit && git push
     br = branch
+    bra = !git branch --all | perl -pe 's/remotes\\/origin\\//\\033[36mR:\\033[0m /g' | perl -pe 's/\\* (.*)/ \\033[100m\\033[97m[$1]\\033[0m/'
+    brs = !git branch --sort=committerdate | egrep -v ' (master|release)' | tail -n 5 | sed 's/^  //g'
     brkill = !sh -c 'git branch -D $1 | git push --no-verify origin :$1' -
     brkillall = !git branch | grep -E -v ' (development|dev|release|edge|master|sprint)$' | xargs git branch -d
     st = stash --include-untracked
@@ -59,7 +61,6 @@
     lg = log --pretty=format:\"%C(auto)%h %Cblue%ad%Creset | %s%d [%Cgreen%an%Creset]\" --graph --date=short
     lgdev = !git lg --no-merges development
     lgsq = !git lg | sed '/*   /q'
-    bra = !git branch --all | perl -pe 's/remotes\\/origin\\//\\033[36mR:\\033[0m /g' | perl -pe 's/\\* (.*)/ \\033[100m\\033[97m[$1]\\033[0m/'
     mergedev = !BRANCH=`git s | head -n 1 | perl -pe 's/On branch //'` && git co development && git pull && git co $BRANCH && git merge development
     prunedev = !git branch --merged development | grep -E -v ' (development|master)$' | xargs git branch -d
     prunemas = !git branch --merged master | grep -E -v ' (development|master)$' | xargs git branch -d
@@ -90,3 +91,5 @@
     old = red bold
     new = green bold
     whitespace = red reverse
+[merge]
+	ff = no
