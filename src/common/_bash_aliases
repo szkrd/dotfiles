@@ -1,7 +1,8 @@
-alias cls='echo -e "\ec" && clear && printf %"$COLUMNS"s |tr " " "-"'
-alias rebash="[[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile"
-alias realias="unalias -a && rebash"
-alias xx="exit"
+# let's use functions for stuff that I might want to run
+# in a script or through tmux (shopt expand_aliases is not always useful)...
+function cls() { echo -e "\ec" && clear && printf %"$COLUMNS"s |tr " " "-"; }
+function rebash() { [[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile; }
+function realias() { unalias -a && rebash; }
 
 # =========================
 # LS AND COLORS
@@ -19,7 +20,8 @@ function ll() {
   LS_COLORS="${LS_COLORS}:fi=35:" ls --color=always -la "$@"| grep -v '^d' | sed '/^total/d' | hilite DARKGRAY '^[@drwx+\-]*'
 }
 
-alias nocolor="sed 's/\x1b\[[0-9;]*m//g'"
+alias decolor="perl -pe 's/\e\[[0-9;]*m(?:\e\[K)?//g'"
+alias nocolor='decolor'
 alias grep='grep --color=auto'
 
 # colored grep
@@ -53,8 +55,7 @@ function mv() {
 function mdcd() { mkdir -p "$@" && cd "$@"; }
 alias md="mdcd"
 alias mc=". /usr/lib/mc/mc-wrapper.sh"
-alias cd..="cd .."
-alias cd....="cd ../.."
+alias ....="cd ../.."
 MCD_PREV_DIR=~
 function mcd() {
   local AFTER="${2}"
@@ -148,21 +149,15 @@ function p() {
 alias nuke="rm -rf ./node_modules && npm cache clear --force && npm install --no-shrinkwrap --update-binary"
 alias npmrd='npm run dev'
 alias npmt='npm test'
-alias npmrt='npm test'
-alias npmtw='npm run test:watch'
-alias npmrtw='npm run test:watch'
 alias npmrl='npm run lint'
 alias npmi='npm install && cp package.json .package.json && git checkout package-lock.json'
 alias yadd='y add -D'
 alias yins='y install'
 alias yrem='y remove'
-alias ys='y start'
-alias yc='y clean'
-alias yex='y start:exposed'
 alias nP='nvm-project'
-alias n8='nvm use 8'
-alias n10='nvm use 10'
-alias n12='nvm use 12'
+alias n8='nvm use 8.17.0'
+alias n10='nvm use 10.21.0'
+alias n12='nvm use 12.18.0'
 
 # npm run without parameters will trigger fzf with the list of scripts' section keys
 # (`npm run` wo params will list runnable scripts of course, but that's too verbose)
@@ -223,31 +218,23 @@ function check_node_version() {
 # nano/na, geany, vscode, pbcopy, pbpaste,
 # copy-cat, copy-path, copy-fn
 
-alias nano='nano -x -w -z -H'
+alias nano='nano -w -z -H'
 alias na='nano'
 alias geany='geany'
 if [ "$PLATFORM" = "macos" ]; then alias geany='open -a geany'; fi
 if [ "$PLATFORM" = "mingw" ]; then alias geany='/c/Program\ Files\ \(x86\)/Geany/bin/geany.exe'; fi
 alias vscode='code'
 if [ "$PLATFORM" = "linux" ]; then
-  alias pbcopy='xclip -i -sel p -f | xclip -i -sel c'
-  alias pbpaste='xclip -selection clipboard -o'
+  function pbcopy() {
+    # pipe = zero parameters & remove colors (and no, afaik -sel pri and -sel clipb.. can not be combined)
+    if [ "$#" -eq 0 ]; then cat < /dev/stdin | decolor| head -c -1 | xclip -i -sel p -f | xclip -i -sel c;
+      else echo "$@" | head -c -1 | xclip -i -sel p -f | xclip -i -sel c; fi
+  }
+  function pbpaste() { xclip -selection clipboard -o; }
 fi
-function copy-cat() { cat $@ | pbcopy; }
+function copy-contents() { cat "$@" | pbcopy; }
 function copy-path() { readlink -f ${@:-.}; readlink -f ${@:-.} | head -c -1 | pbcopy; }
 alias copy-fn='copy-path'
-
-# =========================
-# EDIT DOTFILES
-# =========================
-
-alias ed-bp="${EDITOR} ~/.bash_profile"
-alias ed-brc="${EDITOR} ~/.bashrc"
-alias ed-ba="${EDITOR} ~/.bash_aliases"
-alias ed-bs="${EDITOR} ~/.bash_secret"
-alias ed-gc="${EDITOR} ~/.gitconfig"
-alias ed-gi="${EDITOR} ~/.gitignore"
-alias ed-mchot="${EDITOR} ~/.config/mc/hotlist"
 
 # =========================
 # PROMPT HELPERS
@@ -346,18 +333,23 @@ alias ncmp-current-song="ncmp ?"
 # =========================
 # SYSTEM
 # =========================
-# s2ram/s2r, xx, df-real
+# s2ram/s2r, xx, df
 
 # only s2ram works reliably
-alias s2ram="sudo s2ram && slock"
-alias s2r="s2ram"
+function s2r() { sudo s2ram && slock; }
 # df without the snap packages and volatile file systems
-alias df-h="df -h -x squashfs | hilite WHITE '[0-9]+%' | hilite DARKGRAY 'Filesystem.*'"
-alias df-real="df --local --human-readable | grep -v '^/dev/loop\|^tmpfs\|^udev'"
+function df-h() { df -h -x squashfs -x tmpfs | hilite WHITE '[0-9]+%' | hilite DARKGRAY 'Filesystem.*'; }
+alias xx="exit"
 
 # =========================
 # TESTBED / PJOT ZONE
 # =========================
 
 # name this the tmux pane as services, launch mongo left, rabbit right
-alias rabbimongo="tt services; mongo40 & tsr1 rabbit"
+function rabbimongo() { tt services; mongo40 & tsr1 rabbit; }
+function npmlslinks() {
+  if [ -d "./node_modules" ]; then
+    ll -l node_modules | grep --color=never ^l
+  fi
+  npm ls -g --depth=0 --link=true 2>&1 | grep -v 'peer dep missing:'
+}

@@ -37,6 +37,9 @@ HISTFILESIZE=2000
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# allow using aliases in subshell
+shopt -s expand_aliases
+
 # maybe we should put these into .inputrc... (see also:
 # https://www.gnu.org/software/bash/manual/html_node/Bindable-Readline-Commands.html)
 # use single tab for autocomplete + ignore case
@@ -45,9 +48,13 @@ bind 'set completion-ignore-case on'
 # alt-w deletes the next word (opposite of ctrl-w and
 # similar to alt-d, which stops at word break chars)
 bind '"\ew": shell-kill-word'
-# alt-u undo (ctrl-_ will conflict with sakura's change font size key
+# alt-z undo (ctrl-_ will conflict with sakura's change font size key
 # and enforcing that to a stricter mode seems to be impossible)
-bind '"\eu": undo'
+bind '"\ez": undo'
+# alt-left/right jump words (default is alt-b/f), ctrl conflicts with sakura's change tab key
+# use `cat > /dev/null` to check the key codes
+bind '"\e[1;3C":forward-word'
+bind '"\e[1;3D":backward-word'
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
