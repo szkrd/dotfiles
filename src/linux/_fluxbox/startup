@@ -8,13 +8,19 @@ export GTK_CSD=0
 ulimit -n 17000
 
 # apt install pnmixer pavucontrol fbsetroot tint2 conky clipit
+
+# slock "No protocol defined"
+xhost + local: &
 xset s off -dpms &
 tint2 &
 fbsetroot -solid grey19 &
 pnmixer &
-~/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox --minimize &
 nm-applet &
 nextcloud &
 clipit &
 conky -p 5 -d &
+update-notifier --startup-delay 3 &
+#~/bin/jetbrains-toolbox --minimize &
+/home/szabi/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox --minimize &
+/home/szabi/bin/nw /home/szabi/Projects/personal/springald &
 exec fluxbox

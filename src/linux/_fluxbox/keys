@@ -122,6 +122,7 @@ Mod1 Mod4 T :Exec sakura --geometry +0-0
 Mod4 C :Exec sakura -r 30 -c 120 -t MC -e mc
 Control Shift Escape :Exec sakura -s -t TOP -e htop
 Mod4 P :Exec lxrandr
+Mod1 Mod4 P :Exec pavucontrol
 #Mod4 L :Exec gnome-screensaver-command --lock
 Mod4 L :Exec slock
 Mod1 Mod4 L :Exec sleep 1 && xset dpms force standby

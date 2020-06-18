@@ -22,11 +22,12 @@
     cam = commit -am
     camam = commit --amend -am
     camN = commit --no-verify -am
-    branch-id = !git branch | grep '*' | grep -oE '[A-Za-z]{2,5}-[0-9]{1,4}' | head -1
     cambi = !sh -c 'git commit -am \""[$(git branch-id)] $*"\"' -
     whoops = commit --amend -all
     caa = !git add --all && git commit
     go = !git add --all && git commit && git push
+    branch-id = !git branch | grep '*' | grep -oE '[A-Za-z]{2,5}-[0-9]{1,5}' | head -1
+    branch-name = !git symbolic-ref HEAD 2>/dev/null | cut -d"/" -f 3-
     br = branch
     bra = !git branch --all | perl -pe 's/remotes\\/origin\\//\\033[36mR:\\033[0m /g' | perl -pe 's/\\* (.*)/ \\033[100m\\033[97m[$1]\\033[0m/'
     brs = !git branch --sort=committerdate | egrep -v ' (master|release)' | tail -n 5 | sed 's/^  //g'
@@ -46,10 +47,10 @@
     ss = status -s
     menoff = merge --no-ff
     pu = push
-    puf = push -f
+    puf = push --force-with-lease
     puft = push --follow-tags
     puN = push --no-verify
-    pufN = push -f --no-verify
+    pufN = push --force-with-lease --no-verify
     pom = push origin master
     md = merge development
     uncommit = reset --soft HEAD^

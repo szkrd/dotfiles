@@ -2,20 +2,33 @@
   [exec] (chrome) {/opt/google/chrome/google-chrome} <>
   [exec] (chromium) {chromium} <>
   [exec] (firefox) {firefox} <>
+  [exec] (zoom) {zoom} <>
   [exec] (geany) {geany} <>
   [exec] (gimp) {gimp} <>
   [exec] (nautilus) {nautilus} <>
   [exec] (terminal) {gnome-terminal} <>
-  [exec] (toolbox) {~/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox} <>
-  [exec] (vscode) {GTK_THEME=Adwaita-dark code} <>
+  [exec] (ws-toolbox) {~/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox} <>
+  #[exec] (ws-toolbox) {~/bin/jetbrains-toolbox} <>
+  [exec] (vscode) {code} <>
   [submenu] (...) {}
+    [exec] (dbeaver) {dbeaver} <>
+    [exec] (chrome 2015) {~/bin/chrome-linux-2015/chrome --no-sandbox --user-data-dir=/home/szabi/.config/google-chrome-legacy} <>
+    [exec] (slack app) {slack} <>
     [exec] (keepass) {keepassxc} <>
     [exec] (robomongo) {~/bin/robomongo} <>
+    [exec] (gnome-clocks) {gnome-clocks} <>
+    [exec] (vbox) {VirtualBox} <>
+    [exec] (inkscape) {inkscape} <>
+    [exec] (springald) {/home/szabi/bin/nw /home/szabi/Projects/personal/springald}
+    [separator]
+    [exec] (obs) {obs} <>
+    [exec] (droidcam) {xterm -e droidcam} <>
+    [exec] (mplayer /dev/video0) {xterm -geometry 80x10 -e mplayer -vf mirror -vf scale=320:240 tv://} <>
   [end]
   [separator]
   [submenu] (settings) {}
-    [exec] (gnome-control-center) {XDG_CURRENT_DESKTOP=GNOME gnome-control-center} <>
-    [exec] (tint2) {tint2conf} <>
+    [exec] (gnome-control-center) {XDG_CURRENT_DESKTOP=GNOME gnome-control-center -v > ~/Temp/gnome-control-center.log 2>&1&} <>
+    [exec] (tint2 config) {tint2conf} <>
     [submenu] (display) {}
       [exec] (reconky) {killall conky && conky -d}
       [exec] (xrandr DP-1 / external only) {xrandr --output eDP-1 --off && xrandr --output DP-1} <>
@@ -24,7 +37,7 @@
     [end]
   [end]
   [submenu] (flux) {}
-    [exec] (edit files) {code -n --folder-uri ~/.fluxbox ~/.fluxbox/init ~/.fluxbox/startup ~/.fluxbox/keys ~/.fluxbox/menu}
+    [exec] (edit flux files) {code -n --folder-uri ~/.fluxbox ~/.fluxbox/init ~/.fluxbox/startup ~/.fluxbox/keys ~/.fluxbox/menu}
     [config] (configuration)
     [submenu] (local styles) {}
       [stylesdir] (~/.fluxbox/styles)
