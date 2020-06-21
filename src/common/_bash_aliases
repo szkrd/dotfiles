@@ -339,6 +339,8 @@ alias ncmp-current-song="ncmp ?"
 function s2r() { sudo s2ram && slock; }
 # df without the snap packages and volatile file systems
 function df-h() { df -h -x squashfs -x tmpfs | hilite WHITE '[0-9]+%' | hilite DARKGRAY 'Filesystem.*'; }
+# kill by port, use killport 8080 -9
+function killport() { lsof -i:${1} && kill ${2} $(lsof -t -i:${1}) && lsof -i:${1}; }
 alias xx="exit"
 
 # =========================

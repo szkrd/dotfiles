@@ -3,6 +3,9 @@ dotfiles
 
 Clone and `npm i` as usual.
 
+Has tools for either diff configs (`npm run diff`)
+or to deploy them with symlinking (`npm run symlink`).
+
 ## Prerequisites
 
 If you want to use the differ, then install _git_, _nano_, _node_, _meld_.

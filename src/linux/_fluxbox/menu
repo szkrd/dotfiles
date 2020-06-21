@@ -19,7 +19,7 @@
     [exec] (gnome-clocks) {gnome-clocks} <>
     [exec] (vbox) {VirtualBox} <>
     [exec] (inkscape) {inkscape} <>
-    [exec] (springald) {/home/szabi/bin/nw /home/szabi/Projects/personal/springald}
+    #[exec] (springald) {/home/szabi/bin/nw /home/szabi/Projects/personal/springald}
     [separator]
     [exec] (obs) {obs} <>
     [exec] (droidcam) {xterm -e droidcam} <>

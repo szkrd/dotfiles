@@ -2,7 +2,7 @@
     name = Szabolcs Kurdi
     email = szabolcs.kurdi@gmail.com
 [core]
-    excludesfile = /Users/szabi/.gitignore
+    excludesfile = ~/.gitignore
     editor = nano
     pager = diff-so-fancy | less --tabs=2 -RFX
 [pull]
