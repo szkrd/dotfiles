@@ -233,7 +233,7 @@ if [ "$PLATFORM" = "linux" ]; then
   function pbpaste() { xclip -selection clipboard -o; }
 fi
 function copy-contents() { cat "$@" | pbcopy; }
-function copy-path() { readlink -f ${@:-.}; readlink -f ${@:-.} | head -c -1 | pbcopy; }
+function copy-path() { readlink -f ${@:-.}; readlink -f ${@:-.} | pbcopy; }
 alias copy-fn='copy-path'
 
 # =========================
