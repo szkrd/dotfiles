@@ -340,7 +340,18 @@ function s2r() { sudo s2ram && slock; }
 # df without the snap packages and volatile file systems
 function df-h() { df -h -x squashfs -x tmpfs | hilite WHITE '[0-9]+%' | hilite DARKGRAY 'Filesystem.*'; }
 # kill by port, use killport 8080 -9
-function killport() { lsof -i:${1} && kill ${2} $(lsof -t -i:${1}) && lsof -i:${1}; }
+function portkill() { lsof -i:${1} && kill ${2} $(lsof -t -i:${1}) && lsof -i:${1}; }
+# who is listening on port (with the executable's args)
+function portwho() {
+  local PID="$(lsof -i:${1} | grep LISTEN | awk '{ print $2 }' | head -n 1)"
+  if [ ! -z "${PID}" ]; then
+    local CMD="$(ps -p ${PID} -o args --no-headers)"
+    echo -e "PID: ${PID}\nCMD: ${CMD}"
+  else
+    echo "pid not found (user ${USER}, port ${1})"
+    return 1
+  fi
+}
 alias xx="exit"
 
 # =========================

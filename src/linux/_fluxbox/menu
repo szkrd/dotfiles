@@ -24,6 +24,7 @@
     [exec] (obs) {obs} <>
     [exec] (droidcam) {xterm -e droidcam} <>
     [exec] (mplayer /dev/video0) {xterm -geometry 80x10 -e mplayer -vf mirror -vf scale=320:240 tv://} <>
+    [exec] (mplayer /dev/video1) {xterm -e mplayer tv:// -tv driver=v4l2:width=640:height=360:device=/dev/video1 -fps 15 -vf scale=320:180,mirror} <>
   [end]
   [separator]
   [submenu] (settings) {}
