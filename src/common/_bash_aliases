@@ -322,13 +322,20 @@ function vacak_shell() {
     interact
   '
 }
+# check if ip address responds in one sec (mostly for functions, but: `islan 192.168.54.20 && echo yes`)
+function islan() {
+  local OK=$(ping ${1} -4 -n -c 1 -r -q -w 1 | grep ' 0% packet loss' | wc -l)
+  if [ "${OK}" -gt 0 ]; then return 0; else return 1; fi
+}
+# run *local* ncmpcpp (which is okay on linux); use param (c)urrent to get the current song only
 function ncmp() {
   if [ $(command -v ncmpcpp | wc -l) -ne 1 ]; then echo "no ncmpcpp?"; return 1; fi
+  if ! islan $VACAK_IP; then return 1; fi
   local H="--host ${VACAK_IP}"
-  if [ "${1}" = '?' ]; then ncmpcpp $H --current-song; echo -e "\n"; return 0; fi
+  if [ "${1}" = 'c' ] || [ "${1}" = 'current' ]; then ncmpcpp $H --current-song; echo -e "\n"; return 0; fi
   ncmpcpp $H "$@"
 }
-alias ncmp-current-song="ncmp ?"
+alias ncmp-current-song="ncmp current"
 
 # =========================
 # SYSTEM

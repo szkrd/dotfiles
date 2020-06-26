@@ -84,6 +84,7 @@ async function main () {
     link('$PRJ/src/common/_tmux.conf'),
     link('$PRJ/src/common/_config/mc/hotlist'),
     link('$PRJ/src/common/_config/mc/menu'),
+    link('$PRJ/src/linux/_config/conky/conky.conf'),
     skip('$PRJ/src/linux/_fluxbox/init'),
     link('$PRJ/src/linux/_fluxbox/keys'),
     link('$PRJ/src/linux/_fluxbox/menu'),
