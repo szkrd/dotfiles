@@ -94,3 +94,5 @@
     whitespace = red reverse
 [merge]
 	ff = no
+[push]
+	followTags = true

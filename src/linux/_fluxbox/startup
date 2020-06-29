@@ -23,5 +23,5 @@ update-notifier --startup-delay 3 &
 #~/bin/jetbrains-toolbox --minimize &
 /home/szabi/.local/share/JetBrains/Toolbox/bin/jetbrains-toolbox --minimize &
 #/home/szabi/bin/nw /home/szabi/Projects/personal/springald &
-/home/szabi/Projects/personal/springald/launcher.sh > /home/szabi/__log.txt &
+/home/szabi/Projects/personal/springald/launcher.sh > /home/szabi/.config/springald/flux_start_log.txt &
 exec fluxbox
