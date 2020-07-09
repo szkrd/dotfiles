@@ -46,15 +46,15 @@ Mod4 Shift Tab :PrevWindow {groups} (workspace=[current])
 ## `win + 1/2/3/4/5/6/7/8/9` = change wtab
 ## `win + backtick` = cycle wtabs
 OnTitlebar Control Mouse1 :StartTabbing
-Mod4 1 :Tab 1
-Mod4 2 :Tab 2
-Mod4 3 :Tab 3
-Mod4 4 :Tab 4
-Mod4 5 :Tab 5
-Mod4 6 :Tab 6
-Mod4 7 :Tab 7
-Mod4 8 :Tab 8
-Mod4 9 :Tab 9
+# Mod4 1 :Tab 1
+# Mod4 2 :Tab 2
+# Mod4 3 :Tab 3
+# Mod4 4 :Tab 4
+# Mod4 5 :Tab 5
+# Mod4 6 :Tab 6
+# Mod4 7 :Tab 7
+# Mod4 8 :Tab 8
+# Mod4 9 :Tab 9
 Mod4 grave :NextTab
 Mod4 Shift grave :PrevTab
 
@@ -134,6 +134,16 @@ Control Print :Exec maim -s > ~/Pictures/Screenshots/$(date +'%Y%m%d_%H%M%S')-cl
 Control Shift Print :Exec maim -s | xclip -selection clipboard -t image/png
 Mod4 Print :Exec env -u SESSION_MANAGER ksnip -r
 Mod4 F12 :Exec xterm -geometry 80x10+0+32 -T record-video -hold -e ~/bin/record-screen.sh
+
+# xrandr (eDP-1 _should be_ the internal), stability
+Mod4 1 :Exec xrandr --output eDP-1 --mode 1920x1080 --primary
+Mod4 2 :Exec xrandr --output DP-1 --mode 2560x1080 --primary
+Mod1 Mod4 1 :Exec xrandr --output eDP-1 --off
+Mod1 Mod4 2 :Exec xrandr --output DP-1 --off
+Mod1 Mod4 3 :Exec xrandr --auto
+Mod1 Mod4 4 :Exec mplayer /usr/share/sounds/freedesktop/stereo/complete.oga
+Mod1 Mod4 5 :Exec sudo service lightdm restart
+Control Mod1 Mod4 R :Exec sync && sync && reboot
 
 ## `win + w, win + w` = use arrow keys to resize & move window, esc exits
 ## `q/w/e/d/c/x/z/a/s` to snap

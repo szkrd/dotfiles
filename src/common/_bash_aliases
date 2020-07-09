@@ -158,6 +158,8 @@ alias nP='nvm-project'
 alias n8='nvm use 8.17.0'
 alias n10='nvm use 10.21.0'
 alias n12='nvm use 12.18.0'
+alias nuse='nvm use'
+alias rmnodemodules='rm -rf ./node_modules'
 
 # npm run without parameters will trigger fzf with the list of scripts' section keys
 # (`npm run` wo params will list runnable scripts of course, but that's too verbose)
@@ -199,17 +201,27 @@ function current_node() {
   fi
 }
 
-# on certain path prefixes show a warning in the prompt if the node version is not okay
-# (unlike `current_node` this one assumes nvm (NV) and will bail out if there's no version string in the path)
+# prompt: check closest nvmrc vs current node version inside ~/Projects/* directories
+# show checkmark if okay, not equal sign for mismatch
 function check_node_version() {
-  local NV=$(which node | egrep -o '/v[0-9]+\.' | sed 's/[^0-9]//g')
-  if [ -z "${NV}" ]; then return; fi;
   local P=$(pwd | sed "s|^$HOME|~|")
-  local VREQ='any'
-  # trx microservices are still on v8, plano prefers v10 and above
-  if [ $(echo $P|grep -c '^~/Projects/trax') -gt 0 ] && [ "${NV}" -ne 8 ]; then VREQ='!= 8'; fi
-  if [ $(echo $P|grep -c '^~/Projects/planorama') -gt 0 ] && [ "${NV}" -lt 10 ]; then VREQ='< 10'; fi
-  if [ "${VREQ}" != 'any' ]; then echo -e "${LIGHTRED} ${VREQ}${NOCOLOR}"; fi
+  if [ $(echo $P|grep -c '^~/Projects/') -eq 0 ]; then return; fi
+  # current node version without v prefix, taken from nvm symlink
+  local NVCURR=$(which node | egrep -o '/v[0-9.]+' | sed 's@/v@@g')
+  if [ -z "${NVCURR}" ]; then return; fi;
+  local NRCPATH="$(nvm_find_nvmrc)"
+  if [ -z "${NRCPATH}" ]; then return; fi
+  # required node version (from .nvmrc)
+  local NVREQ="$(cat "${NRCPATH}")"
+  if [ -z "${NVREQ}" ]; then return; fi
+  # str len of version in nvmrc (excluding eol char)
+  local NVERLEN="$(echo "${NVREQ}"|grep -o .|wc -l)"
+  local NVCURRTRUNC="$(echo "${NVCURR}"|cut -c -${NVERLEN})"
+  if [ "${NVCURRTRUNC}" = "${NVREQ}" ]; then
+    echo -e "${GREEN}✔${NOCOLOR}"
+  else
+    echo -e "${RED}≠${NVREQ}${NOCOLOR}"
+  fi
 }
 
 # =========================
