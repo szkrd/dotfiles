@@ -212,7 +212,7 @@ function check_node_version() {
   local NRCPATH="$(nvm_find_nvmrc)"
   if [ -z "${NRCPATH}" ]; then return; fi
   # required node version (from .nvmrc)
-  local NVREQ="$(cat "${NRCPATH}")"
+  local NVREQ="$(cat "${NRCPATH}" | sed 's/^v//')"
   if [ -z "${NVREQ}" ]; then return; fi
   # str len of version in nvmrc (excluding eol char)
   local NVERLEN="$(echo "${NVREQ}"|grep -o .|wc -l)"

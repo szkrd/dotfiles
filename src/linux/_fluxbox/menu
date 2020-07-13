@@ -2,7 +2,7 @@
   [exec] (chrome) {/opt/google/chrome/google-chrome} <>
   [exec] (chromium) {chromium} <>
   [exec] (firefox) {firefox} <>
-  [exec] (zoom) {zoom} <>
+  [exec] (zoom) {~/bin/ZoomLauncher} <>
   [exec] (geany) {geany} <>
   [exec] (gimp) {gimp} <>
   [exec] (nautilus) {nautilus} <>
