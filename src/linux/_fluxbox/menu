@@ -11,7 +11,7 @@
   #[exec] (ws-toolbox) {~/bin/jetbrains-toolbox} <>
   [exec] (vscode) {code} <>
   [submenu] (...) {}
-    [exec] (dbeaver) {dbeaver} <>
+    [exec] (dbeaver) {GTK_IM_MODULE="ibus" QT_IM_MODULE="ibus" XMODIFIERS="@im=ibus" dbeaver} <>
     [exec] (chrome 2015) {~/bin/chrome-linux-2015/chrome --no-sandbox --user-data-dir=/home/szabi/.config/google-chrome-legacy} <>
     [exec] (slack app) {slack} <>
     [exec] (keepass) {keepassxc} <>
