@@ -112,6 +112,10 @@ fi
 if [ -f /usr/share/bash-completion/completions/git ]; then
   . /usr/share/bash-completion/completions/git
 fi
+# linux brew's autocomplete files
+if [ -d /home/linuxbrew/.linuxbrew/etc/bash_completion.d ]; then
+  for f in /home/linuxbrew/.linuxbrew/etc/bash_completion.d/*; do . $f; done
+fi
 
 # git autocomplete using brew on mac (brew install bash-completion)
 if [ "$PLATFORM" = "macos" ]; then
