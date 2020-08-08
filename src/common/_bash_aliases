@@ -36,6 +36,15 @@ function cgrep() {
 # print all matches and hilight the grepped text
 function hilite() { cgrep $1 -e '^' -e "${@:2}"; }
 
+# use most for man pages (colored output)
+if [[ $(command -v most | wc -l) -eq 1 ]]; then
+  alias man='PAGER=most man'
+fi
+
+# bat is a better cat, has syntax highlighting (use brew to install it);
+# let's hide line numbers (vs copy-paste) and some other fancy stuff
+alias bat='bat --theme ansi-dark --style=header,grid'
+
 # =========================
 # MV, CD, MC, MCD, FCD...
 # =========================
