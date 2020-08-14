@@ -172,15 +172,20 @@ alias rmnodemodules='rm -rf ./node_modules'
 
 # npm run without parameters will trigger fzf with the list of scripts' section keys
 # (`npm run` wo params will list runnable scripts of course, but that's too verbose)
-# (another way to do smg similar would be with using jq, like `jq ".scripts" package.json`)
+# (the node exec version breaks with nvm version change, for example on 10.22.0)
 # (here fzf uses multi with xargs (one line at a time), which is simple, since script names got no spaces,
 # but I want it to stop at the first error, that's why I need the shell exec and the special exit code)
 function npmr() {
   if [ ! -f "package.json" ]; then echo "no package.json"; return 1; fi
   if [ ! -z "${1}" ]; then command npm run "$@"; return $?; fi
-  local JS="x=require('./package.json');console.log(Object.keys(x.scripts||{}).sort().join('\n'))"
-  local VAL=$(node -e "${JS}" | fzf --tac --multi --cycle)
-  if [ ! -z "$VAL" ]; then echo -e "${VAL}" | xargs -n1 sh -c 'npm run $0 || exit 255'; fi
+  # local JS="x=require('./package.json');console.log(Object.keys(x.scripts||{}).sort().join('\n'))"
+  # local VAL=$(node -e "${JS}" | fzf --tac --multi --cycle)
+  local VAL=$(jq '.scripts | keys[]' package.json | sort | sed 's/^"//' | sed 's/"$//' | fzf --tac --multi --cycle)
+  local CMD=$(echo $VAL | sed 's/ / \&\& npm run /g' | sed 's/^/npm run /')
+  if [ ! -z "$VAL" ]; then
+    echo -e "${YELLOW}${CMD}${NOCOLOR}"
+    echo "${VAL}" | sed 's/ /\n/g' | xargs -n1 sh -c 'npm run $0 || exit 255';
+  fi
 }
 
 # change to node version specified by project
