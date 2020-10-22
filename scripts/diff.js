@@ -56,15 +56,9 @@ const getDiffByteCount = (a, b) => {
 const getLeftFileName = (fn) => {
   fn = fn.includes(':') ? fn.split(':')[0] : fn
   const selectLeftByPlatform = (s = 'common') => path.join(projectLocation, 'src', s, `_${fn}`)
-  const firstPreference = prefersPlatformSpecific ? platformNiceName : 'common'
-  let leftFile = selectLeftByPlatform(firstPreference)
-  // if "common" did not work, try it with the platform specific override, then with 'macos'
-  if (!fs.existsSync(leftFile)) {
-    leftFile = selectLeftByPlatform(platformNiceName)
-  }
-  if (!fs.existsSync(leftFile)) {
-    leftFile = selectLeftByPlatform('macos')
-  }
+  let leftFile = selectLeftByPlatform(prefersPlatformSpecific ? platformNiceName : 'common')
+  if (!fs.existsSync(leftFile) && prefersPlatformSpecific) { leftFile = selectLeftByPlatform() } // try with common
+  if (!fs.existsSync(leftFile)) { leftFile = selectLeftByPlatform(platformNiceName) } // try with platform
   return fs.existsSync(leftFile) ? leftFile : ''
 }
 
