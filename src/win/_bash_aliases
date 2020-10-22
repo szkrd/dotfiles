@@ -47,6 +47,7 @@ alias g="git"
 #alias d="docker"
 #alias d='winpty docker'
 alias npmnuke="rm -rf ./node_modules && npm cache clear --force && npm install --no-shrinkwrap --update-binary"
+alias npmr='npm run'
 alias npmrd='npm run dev'
 alias npmt='npm test'
 alias rmnodemodules='rm -rf ./node_modules'

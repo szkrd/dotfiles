@@ -33,10 +33,20 @@ Filenames may be shortened so far (`bash_profile` as `ba`, `gitignore` as `gi` e
 > * `npm run diff:bp`, `npm run diff:ba`, `npm run diff:gi` etc.
 > * supported files and aliases:
 >   * `bp`: `.bash_profile`
->   * `br`: `.bashrc` (alias for bash_profile)
+>   * `br`: `.bashrc` (bash_profile in repo, bashrc locally)
 >   * `bs`: `.bash_secret`
 >   * `gc`: `.gitconfig`
 >   * `gi`: `.gitignore`
 >   * `tmux`: `.tmux.conf`
 >   * `screen`: `.screenrc`
 >   * `mc`: `.config/mc/menu` (mc user menu)
+
+## Platform specific notes
+
+### Windows
+
+1. windows now prefers its own folder (instead of common), see `prefersPlatformSpecific` in [diff.js](./scripts/diff.js)
+2. don't forget to set the diff tool, eg.:
+   - `DIFF_TOOL="/c/Program Files/WinMerge/WinMergeU.exe" npm run diff`
+   - `DIFF_TOOL="/c/Program Files/Perforce/p4merge.exe" npm run diff`
+   - `DIFF_TOOL="/c/Users/szabi/AppData/Local/Programs/Microsoft VS Code/Code.exe" npm run diff`

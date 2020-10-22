@@ -9,6 +9,7 @@
     "diff": "node ./scripts/diff",
     "symlink": "node ./scripts/symlink.js",
     "diff:flux": "node ./scripts/diff flux",
+    "diff:br": "node ./scripts/diff bash_profile:bashrc",
     "diff:bp": "node ./scripts/diff bash_profile",
     "diff:ba": "node ./scripts/diff bash_aliases",
     "diff:bs": "node ./scripts/diff bash_secret",

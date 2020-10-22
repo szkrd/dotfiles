@@ -14,14 +14,17 @@ let args = process.argv.slice(2)
 let scriptLocation = process.argv[1]
 try { scriptLocation = fs.readlinkSync(process.argv[1]) } catch (err) {}
 const projectLocation = path.join(path.dirname(scriptLocation), '/..')
-const platform = os.platform()
-const isMacOS = platform === 'darwin'
-const isLinux = platform === 'linux'
+const platform = os.platform().replace(/\d/g, '') // 'darwin', 'linux', 'win'
 const diffTool = process.env.DIFF_TOOL || 'meld'
-let platformNiceName = { darwin: 'macos', linux: 'linux', win: 'win32' }[platform] || platform
+const prefersPlatformSpecific = platform === 'win' // windows is an oddball, at least for now, so it prefers "win" dir over "common"
+let platformNiceName = { darwin: 'macos', linux: 'linux', win: 'win' }[platform] || platform
+
+const diffToolExtraParams = {
+  'Code.exe,code': [ '--new-window', '--diff' ]
+}
 
 let fnTemplates = {
-  br: 'bash_profile', // alias for bashrc
+  br: 'bash_profile:bashrc', // left is bash_profile right is bashrc
   bp: 'bash_profile',
   ba: 'bash_aliases',
   bs: 'bash_secret',
@@ -51,8 +54,10 @@ const getDiffByteCount = (a, b) => {
 }
 
 const getLeftFileName = (fn) => {
+  fn = fn.includes(':') ? fn.split(':')[0] : fn
   const selectLeftByPlatform = (s = 'common') => path.join(projectLocation, 'src', s, `_${fn}`)
-  let leftFile = selectLeftByPlatform()
+  const firstPreference = prefersPlatformSpecific ? platformNiceName : 'common'
+  let leftFile = selectLeftByPlatform(firstPreference)
   // if "common" did not work, try it with the platform specific override, then with 'macos'
   if (!fs.existsSync(leftFile)) {
     leftFile = selectLeftByPlatform(platformNiceName)
@@ -60,15 +65,12 @@ const getLeftFileName = (fn) => {
   if (!fs.existsSync(leftFile)) {
     leftFile = selectLeftByPlatform('macos')
   }
-  return leftFile
+  return fs.existsSync(leftFile) ? leftFile : ''
 }
 
 const getRightFileName = (fn) => {
+  fn = fn.includes(':') ? fn.split(':')[1] : fn
   let rightFile = path.join(userHome, `.${fn}`)
-  // nowadays I use bashrc-only setups
-  if (fn === 'bash_profile' && isLinux) {
-    rightFile = rightFile.replace(/_profile$/, 'rc')
-  }
   return rightFile
 }
 
@@ -79,7 +81,13 @@ const getLeftAndRightFileNames = (fn) => {
 }
 
 const launchDiffer = (a, b) => {
-  const subProcess = childProcess.spawn(diffTool, [a, b], {
+  let extraParams = []
+  Object.keys(diffToolExtraParams).forEach(lastParts => {
+    lastParts.split(',').forEach(lastPart => {
+      if (diffTool.endsWith(lastPart)) { extraParams = diffToolExtraParams[lastParts] }
+    })
+  })
+  const subProcess = childProcess.spawn(diffTool, [...extraParams, a, b], {
     detached: true,
     stdio: 'ignore'
   })
@@ -91,6 +99,10 @@ const startNonInteractiveMode = (realArgs) => {
   let fn = realArgs[0].replace(/^[_.]/, '')
   fn = fnTemplates[fn] || fn
   const [ leftFile, rightFile ] = getLeftAndRightFileNames(fn)
+  if (!leftFile) {
+    log.info(chalk.yellow('Left file (repo) is missing, can\'t compare!'))
+    return 0
+  }
   log.info(`Comparing files:\nleft (repo):   ${chalk.red(leftFile)}\nright (yours): ${chalk.cyan(rightFile)}\n`)
   if (getDiffByteCount(leftFile, rightFile) === 0) {
     log.info(chalk.green('The two files are identical.\n'))
@@ -104,6 +116,9 @@ const printStatsForInteractiveMode = (fileNames) => {
   const longestFileName = Math.max(...fileNames.map(s => s.length))
   fileNames.forEach((name, i) => {
     const [ leftFile, rightFile ] = getLeftAndRightFileNames(name)
+    if (!leftFile) {
+      return
+    }
     const diffCountInBytes = getDiffByteCount(leftFile, rightFile)
     const chalkColor = diffCountInBytes > 0 ? 'red' : (diffCountInBytes < 0 ? 'cyan' : 'white')
     const formattedName = (name + (new Array(20).join(' '))).substr(0, longestFileName + 1)
@@ -133,11 +148,7 @@ async function startInteractiveMode () {
 
 // ----
 
-if (!isMacOS && !isLinux) {
-  log.warn(`Platform "${platform}" has not been tested. It may or may not work.`)
-}
-
-if (!commandExistsSync(diffTool)) {
+if (!commandExistsSync(diffTool) && !fs.existsSync(diffTool)) {
   log.error(`Diff tool "${diffTool}" not found, exiting.`)
   process.exit(1)
 }
