@@ -1,0 +1,59 @@
+# see also: "c:\Program Files\Git\etc\profile.d\"
+# +---------------+
+# | BASH, TERM    |
+# +---------------+
+function rebash() { [[ -f ~/.bashrc ]] && . ~/.bashrc || . ~/.bash_profile; }
+function realias() { unalias -a && rebash; }
+alias xx="exit"
+function cls() { echo -e "\ec" && clear && printf %"$COLUMNS"s |tr " " "-"; }
+function titleprefix() { TITLEPREFIX="$1"; }
+alias tp="titleprefix"
+# +---------------+
+# | LS, COLORS    |
+# +---------------+
+alias ls='ls -F --color=auto --show-control-chars'
+alias la='ls -A'
+alias l='ls -CF'
+#alias ll='ls -l --group-directories-first'
+function ll() { LS_COLORS="${LS_COLORS}:fi=35:" ls --group-directories-first --color=always -la "$@" | hilite DARKGRAY '^[@drwx+\-]*'; }
+alias decolor="perl -pe 's/\e\[[0-9;]*m(?:\e\[K)?//g'"
+alias nocolor='decolor'
+alias grep='grep --color=auto'
+# colored grep (usage: `cgrep RED Foobar`)
+function cgrep() {
+  local UP=$(echo $1 | tr a-z A-Z | sed 's/[^A-Z]//g')
+  local COLOR=$(eval "echo \$$UP" | sed 's/[^0-9;]//g')
+  GREP_COLORS="ms=${COLOR}" egrep --color=always "${@:2}"
+}
+# print all matches and hilight the grepped text
+function hilite() { cgrep $1 -e '^' -e "${@:2}"; }
+# +---------------+
+# | MV, CD        |
+# +---------------+
+# a slightly better rename (one argument will trigger readline for second)
+function mv() {
+  if [ "$#" -eq 1 ] && [ -e "$1" ]; then read -ei "$1" newfilename; command mv -v "${1}" "${newfilename}"; return $?; fi
+  command mv "$@"; return $?
+}
+function mdcd() { mkdir -p "$@" && cd "$@"; }
+alias md="mkdir"
+alias ....="cd ../.."
+# +---------------+
+# | APPS          |
+# +---------------+
+alias g="git"
+#alias y="yarn"
+#alias y="node /c/Users/szabi/scoop/apps/yarn/current/Yarn/lib/cli.js"
+#alias d="docker"
+#alias d='winpty docker'
+alias npmnuke="rm -rf ./node_modules && npm cache clear --force && npm install --no-shrinkwrap --update-binary"
+alias npmrd='npm run dev'
+alias npmt='npm test'
+alias rmnodemodules='rm -rf ./node_modules'
+alias npmrl='npm run lint'
+alias yadd='y add -D'
+alias yins='y install'
+alias yrem='y remove'
+alias nano='nano -w -z -H'
+alias vscode='code'
+alias pbcopy='clip'

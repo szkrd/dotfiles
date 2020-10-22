@@ -27,14 +27,18 @@
     cam = commit -am
     camam = commit --amend -am
     camN = commit --no-verify -am
-    branch-id = !git branch | grep '*' | cut -c 3- | sed 's/-.*//'
     cambi = !sh -c 'git commit -am \""#$(git branch-id) $*"\"' -
     whoops = commit --amend -all
     caa = !git add --all && git commit
     go = !git add --all && git commit && git push
+    branch-id = !git branch | grep '*' | cut -c 3- | sed 's/-.*//'
+    branch-name = !git symbolic-ref HEAD 2>/dev/null | cut -d"/" -f 3-
     br = branch
+    bra = !git branch --all | perl -pe 's/remotes\\/origin\\//\\033[36mR:\\033[0m /g' | perl -pe 's/\\* (.*)/ \\033[100m\\033[97m[$1]\\033[0m/'
+    brs = !git branch --sort=committerdate | egrep -v ' (master|release)' | tail -n 5 | sed 's/^  //g'
     brkill = !sh -c 'git branch -D $1 | git push --no-verify origin :$1' -
-    brkillall = !git branch | grep -E -v ' (development|master|sprint)$' | xargs git branch -d
+    brkillall = !git branch | grep -E -v ' (development|dev|release|edge|master|sprint)$' | xargs git branch -d
+    st = stash --include-untracked
     stkill = stash clear
     rb = rebase
     rbi = rebase --interactive
@@ -46,10 +50,12 @@
     pop = stash pop
     s = status
     ss = status -s
+    menoff = merge --no-ff
     pu = push
-    puf = push -f
+    puf = push --force-with-lease
+    puft = push --follow-tags
     puN = push --no-verify
-    pufN = push -f --no-verify
+    pufN = push --force-with-lease --no-verify
     pom = push origin master
     md = merge development
     uncommit = reset --soft HEAD^
@@ -61,7 +67,6 @@
     lg = log --pretty=format:\"%C(auto)%h %Cblue%ad%Creset | %s%d [%Cgreen%an%Creset]\" --graph --date=short
     lgdev = !git lg --no-merges development
     lgsq = !git lg | sed '/*   /q'
-    bra = !git branch --all | perl -pe 's/remotes\\/origin\\//\\033[36mR:\\033[0m /g' | perl -pe 's/\\* (.*)/ \\033[100m\\033[97m[$1]\\033[0m/'
     mergedev = !BRANCH=`git s | head -n 1 | perl -pe 's/On branch //'` && git co development && git pull && git co $BRANCH && git merge development
     prunedev = !git branch --merged development | grep -E -v ' (development|master)$' | xargs git branch -d
     prunemas = !git branch --merged master | grep -E -v ' (development|master)$' | xargs git branch -d
@@ -92,8 +97,11 @@
     old = red bold
     new = green bold
     whitespace = red reverse
-    [merge]
+[merge]
+    ff = no
     tool = p4merge
+[push]
+	followTags = true
 [mergetool "p4merge"]
     path = C:\\Program Files\\Perforce\\p4merge.exe
 [diff]
