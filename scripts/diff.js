@@ -47,8 +47,8 @@ if (args.includes('flux')) {
 }
 
 const getDiffByteCount = (a, b) => {
-  const leftContents = fs.readFileSync(a, 'utf-8')
-  const rightContents = fs.readFileSync(b, 'utf-8')
+  const leftContents = fs.existsSync(a) ? fs.readFileSync(a, 'utf-8') : ''
+  const rightContents = fs.existsSync(b) ? fs.readFileSync(b, 'utf-8') : ''
   const normalize = s => s.trim().replace(/\r\n/g, '\n').replace(/\r/g, '\n')
   return normalize(leftContents).length - normalize(rightContents).length
 }

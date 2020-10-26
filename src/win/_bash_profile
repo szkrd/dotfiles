@@ -60,6 +60,7 @@ if [[ $(declare -f _git) ]]; then complete -F _git g; fi
 # +----------------+
 # | EXPORTS & PATH |
 # +----------------+
+export FORCE_COLOR=true
 export EDITOR=nano
 export GUI_EDITOR=code
 export LANG=en_EN.UTF-8
