@@ -19,23 +19,33 @@
     co = checkout
     cob = !sh -c 'git checkout -b $1 && git push -u --no-verify origin $1' -
     cogr = !sh -c 'git branch --all --color=never | grep --color=never $1 | sed -n -e "s-remotes/origin/--p" | xargs git checkout' -
+    ceci = !sh -c 'git cogr ECI-$1' -
     cofe = !sh -c 'git co feature/$1' -
     cobu = !sh -c 'git co bugfix/$1' -
     cod = checkout development
     com = checkout master
+    cot = checkout test
+    co1 = !git brl | sed -n '1p' | xargs git checkout
+    co2 = !git brl | sed -n '2p' | xargs git checkout
+    co3 = !git brl | sed -n '3p' | xargs git checkout
+    co4 = !git brl | sed -n '4p' | xargs git checkout
+    co5 = !git brl | sed -n '5p' | xargs git checkout
     ci = commit
     cam = commit -am
     camam = commit --amend -am
     camN = commit --no-verify -am
-    cambi = !sh -c 'git commit -am \""#$(git branch-id) $*"\"' -
+    cambi = !sh -c 'git commit -am \""$(git branch-id) $*"\"' -
+    cambiN = !sh -c 'git commit --no-verify -am \""$(git branch-id) $*"\"' -
     whoops = commit --amend -all
     caa = !git add --all && git commit
     go = !git add --all && git commit && git push
-    branch-id = !git branch | grep '*' | cut -c 3- | sed 's/-.*//'
+    branch-id = !git branch | grep '*' | cut -c 3- | sed 's/^(feature|work|bugfix)//' | grep -oE '[A-Z]+-[0-9]+'
     branch-name = !git symbolic-ref HEAD 2>/dev/null | cut -d"/" -f 3-
     br = branch
+    brc = !git branch --show-current | tr -d '\n'
     bra = !git branch --all | perl -pe 's/remotes\\/origin\\//\\033[36mR:\\033[0m /g' | perl -pe 's/\\* (.*)/ \\033[100m\\033[97m[$1]\\033[0m/'
     brs = !git branch --sort=committerdate | egrep -v ' (master|release)' | tail -n 5 | sed 's/^  //g'
+    brl = !git for-each-ref --count=5 --sort=-committerdate refs/heads/ --format='%(refname:short)'
     brkill = !sh -c 'git branch -D $1 | git push --no-verify origin :$1' -
     brkillall = !git branch | grep -E -v ' (development|dev|release|edge|master|sprint)$' | xargs git branch -d
     st = stash --include-untracked
@@ -63,7 +73,7 @@
     flush = stash clear
     p = pull
     pr = !git fetch && git pull --rebase
-    sp = !git stash && git fetch && git pull && git stash pop
+    sp = !git stash --include-untracked && git fetch && git pull && git stash pop
     lg = log --pretty=format:\"%C(auto)%h %Cblue%ad%Creset | %s%d [%Cgreen%an%Creset]\" --graph --date=short
     lgdev = !git lg --no-merges development
     lgsq = !git lg | sed '/*   /q'
