@@ -136,8 +136,12 @@ export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
 #PS1="\[\e[0;32m\]\u\[\e[m\] \$(current_node)\[\e[1;34m\]\w\[\e[m\]\[\e[0;33m\]\$(markup_git_branch \$(parse_git_branch))\[\e[1;32m\]\n\$ \[\e[m\]\[\e[0;37m\]"
 PS1="\[${GREEN}\]\u\$(is_mc)\$(current_node)\$(check_node_version) \[${LIGHTBLUE}\]\w\$(markup_git_branch \$(parse_git_branch))\[${LIGHTGREEN}\]\n\$ \[${NOCOLOR}\]"
 
-PATH=$PATH:~/bin:~/.local/bin:~/bin/rabbitmq/sbin:~/Nextcloud/Work/bin:~/Projects/planorama/DevScripts/services
+# most common path items
+PATH=$PATH:~/bin
+if [ -d "${HOME}/.local/bin" ]; then PATH=$PATH:~/.local/bin; fi
+if [ -d "${HOME}/bin/diff-so-fancy" ]; then PATH=$PATH:~/bin/diff-so-fancy; fi
 if [ "$PLATFORM" = "mingw" ]; then PATH=$PATH:/c/git-sdk-64/usr/bin/; fi
+
 export EDITOR=nano
 GUI_EDITOR=geany
 export LANG=en_EN.UTF-8
@@ -160,9 +164,10 @@ fi
 # python 2 for node-gyp fix
 #export PYTHON=/usr/bin/python2.7
 
-# I usually install npm with scoop on windows, so I'm not going to mess with globals' location
+# I usually install npm with scoop on windows, so I'm not going to mess with globals' location;
 # on linux the following check is for sindre's non-root npm global guide
 # (https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md)
+# in short, for that to work: `mkdir ~/.npm-packages && npm config set prefix ~/.npm-packages`
 if [ -d "${HOME}/.npm-packages" ]; then
   NPM_PACKAGES="${HOME}/.npm-packages"
   export PATH="$NPM_PACKAGES/bin:$PATH"
