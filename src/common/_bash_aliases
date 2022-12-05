@@ -63,7 +63,7 @@ function mv() {
 # (adding "f" as the second param will just do an `&& fcd 1`, because lazyness)
 function mdcd() { mkdir -p "$@" && cd "$@"; }
 alias md="mdcd"
-alias mc=". /usr/lib/mc/mc-wrapper.sh"
+if [ -f "/usr/lib/mc/mc-wrapper.sh" ]; then alias mc=". /usr/lib/mc/mc-wrapper.sh"; fi
 alias ....="cd ../.."
 MCD_PREV_DIR=~
 function mcd() {
@@ -123,32 +123,32 @@ if [ "$PLATFORM" = "mingw" ]; then alias y="node /c/Users/szabi/scoop/apps/yarn/
 alias d="docker"
 if [ "$PLATFORM" = "mingw" ]; then alias d='winpty docker'; fi
 # pm2 wrapper with fzf and shortened commands
-function p() {
-  # (le) list errored, (lg) list grep, (ra) reset all, (da) delete all, (?/f) fuzzy operation, (n) number
-  if [ "${1}" = 'le' ]; then pm2 l | grep -v '│ 0    │'; return 0; fi
-  if [ "${1}" = 'lg' ]; then pm2 l | grep --color=never -Ei "${2}| id  |────────────" | grep -iz ${2}; return 0; fi
-  if [ "${1}" = 'ra' ]; then pm2 reset all; return 0; fi
-  if [ "${1}" = 'da' ]; then pm2 delete all; return 0; fi
-  if [ "${1}" = 'n' ]; then
-    local LINES="$(pm2 list | grep "${2}" | cut -c -78 | sed 's/│//g' | sed 's/default.*//g' | awk '{$1=$1};1' | sed 's/\s/ = /')"
-    if [ "$(wc -l <<< $LINES)" -gt 1 ]; then echo "${LINES}"; fi
-    pm2 list | grep "${2}" | cut -c -11 | sed 's/[^0-9]*//g' | xargs | sed -e 's/ /,/g'
-    return 0
-  fi
-  local FUZZ=0
-  if [ -z "${2}" ]; then
-    # these commands without a second param will trigger fuzzy matching
-    if [ "${1}" = 'start' ] || [ "${1}" = 'stop' ] || [ "${1}" = 'delete' ] || [ "${1}" = 'restart' ]; then FUZZ=1; fi;
-  fi
-  if [ "${2}" = '?' ] || [ "${2}" = 'f' ] || [ "${FUZZ}" -eq 1 ]; then
-    local IDS=$(pm2 list | grep -v WARN | fzf --exact --reverse --multi | sed 's/ //g' | sed 's/│/|/g' | cut -d '|' -f2 | xargs echo)
-    if [ -z "${IDS}" ]; then return 0; fi
-    echo -e "${CYAN}targets:${NOCOLOR} ${IDS} ${CYAN}operation:${NOCOLOR} ${1}"
-    pm2 ${1} ${IDS}
-    return 0
-  fi
-  pm2 $@
-}
+#function p() {
+#  # (le) list errored, (lg) list grep, (ra) reset all, (da) delete all, (?/f) fuzzy operation, (n) number
+#  if [ "${1}" = 'le' ]; then pm2 l | grep -v '│ 0    │'; return 0; fi
+#  if [ "${1}" = 'lg' ]; then pm2 l | grep --color=never -Ei "${2}| id  |────────────" | grep -iz ${2}; return 0; fi
+#  if [ "${1}" = 'ra' ]; then pm2 reset all; return 0; fi
+#  if [ "${1}" = 'da' ]; then pm2 delete all; return 0; fi
+#  if [ "${1}" = 'n' ]; then
+#    local LINES="$(pm2 list | grep "${2}" | cut -c -78 | sed 's/│//g' | sed 's/default.*//g' | awk '{$1=$1};1' | sed 's/\s/ = /')"
+#    if [ "$(wc -l <<< $LINES)" -gt 1 ]; then echo "${LINES}"; fi
+#    pm2 list | grep "${2}" | cut -c -11 | sed 's/[^0-9]*//g' | xargs | sed -e 's/ /,/g'
+#    return 0
+#  fi
+#  local FUZZ=0
+#  if [ -z "${2}" ]; then
+#    # these commands without a second param will trigger fuzzy matching
+#    if [ "${1}" = 'start' ] || [ "${1}" = 'stop' ] || [ "${1}" = 'delete' ] || [ "${1}" = 'restart' ]; then FUZZ=1; fi;
+#  fi
+#  if [ "${2}" = '?' ] || [ "${2}" = 'f' ] || [ "${FUZZ}" -eq 1 ]; then
+#    local IDS=$(pm2 list | grep -v WARN | fzf --exact --reverse --multi | sed 's/ //g' | sed 's/│/|/g' | cut -d '|' -f2 | xargs echo)
+#    if [ -z "${IDS}" ]; then return 0; fi
+#    echo -e "${CYAN}targets:${NOCOLOR} ${IDS} ${CYAN}operation:${NOCOLOR} ${1}"
+#    pm2 ${1} ${IDS}
+#    return 0
+#  fi
+#  pm2 $@
+#}
 
 # =========================
 # NODE, YARN, NVM
@@ -323,8 +323,8 @@ function ttp() {
 # jpg2mp4, ytdl, ytdlmp3
 
 function jpg2mp4() { ffmpeg -loop 1 -i "$1" -c:v libx264 -t 15 -pix_fmt yuv420p "$1.mp4"; }
-alias ytdl="youtube-dl"
-alias ytdlmp3="youtube-dl -x --audio-format mp3"
+alias ytdl="yt-dlp"
+alias ytdlmp3="yt-dlp -x --audio-format mp3"
 
 # =========================
 # VACAK
