@@ -23,6 +23,7 @@ function ll() {
 alias decolor="perl -pe 's/\e\[[0-9;]*m(?:\e\[K)?//g'"
 alias nocolor='decolor'
 alias grep='grep --color=auto'
+alias egrep="grep -E"
 
 # colored grep
 # usage: `cgrep RED Foobar` the color is from the list in my bashrc
