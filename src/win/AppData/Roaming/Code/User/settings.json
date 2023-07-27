@@ -1,0 +1,56 @@
+{
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.fontSize": 15,
+  "terminal.integrated.fontFamily": "Inconsolata",
+  "terminal.integrated.tabs.enabled": false,
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "files.enableTrash": false,
+  "explorer.confirmDelete": false,
+  "editor.rulers": [
+    {
+      "column": 0,
+      "color": "#404040"
+    },
+    {
+      "column": 100,
+      "color": "#88888830"
+    },
+    120
+  ],
+  "security.workspace.trust.untrustedFiles": "open",
+  "gitlens.currentLine.enabled": false,
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.defaultDateStyle": "absolute",
+  "gitlens.defaultDateFormat": "YYYY-MM-DD",
+  "gitlens.defaultDateShortFormat": "YYYY-MM-DD",
+  "gitlens.defaultTimeFormat": "HH:mm",
+  "gitlens.codeLens.enabled": false,
+  "gitlens.statusBar.enabled": false,
+  "gitlens.hovers.enabled": false,
+  "gitlens.views.commits.avatars": false,
+  "gitlens.blame.avatars": false,
+  "gitlens.blame.format": "${author|15} ${message|15} ${agoOrDate|14-}",
+  "gitlens.graph.statusBar.enabled": false,
+  "workbench.editor.showTabs": false,
+  "explorer.openEditors.visible": 20,
+  "eslint.alwaysShowStatus": true,
+  "extensions.ignoreRecommendations": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "angular.view-engine": true,
+  "workbench.iconTheme": "zanza",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "git.openRepositoryInParentFolders": "never",
+  "editor.unicodeHighlight.ambiguousCharacters": false,
+  "explorer.compactFolders": false
+}

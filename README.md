@@ -52,3 +52,4 @@ Install _git_, _nano_, _node_, _meld_:
    - `DIFF_TOOL="/c/Program Files/WinMerge/WinMergeU.exe" npm run diff`
    - `DIFF_TOOL="/c/Program Files/Perforce/p4merge.exe" npm run diff`
    - `DIFF_TOOL="/c/Users/szabi/AppData/Local/Programs/Microsoft VS Code/Code.exe" npm run diff`
+4. TODO: add support for partial roaming configartion merging (?)
